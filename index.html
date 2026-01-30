@@ -403,6 +403,15 @@
             padding-top: 3vh; 
         }
 
+        /* 💡 僅開放匯款資訊與粗體字被選取 */
+        .allow-select, 
+        .allow-select strong,
+        strong {
+            user-select: text !important;
+            -webkit-user-select: text !important; /* 針對 iOS Safari 必填 */
+            cursor: text;
+        }
+
         /* 如果您有幫結帳頁面的 section 加入 page-checkout 類別 */
         .page-checkout .content-card  {
             justify-content: flex-start !important;
@@ -886,7 +895,7 @@
     <section class="page page-checkout">
         <div class="content-card" style="max-width: 650px;">
             <h3 style="margin-bottom: 10px; font-size: 1.8rem; color: #353569;">結帳資訊</h3>
-            <div style="font-weight: bold; font-size: 1.3rem; margin-top: 0px; margin-bottom: 5px; color: #3e2723; text-align:left; align-items: center;">
+            <div class="allow-select" style="font-weight: bold; font-size: 1.1rem; margin-top: 0px; margin-bottom: 15px; color: #3e2723; text-align:left; line-height: 1.8;">
                 匯款帳戶：824 連線商業銀行 （6880 總行）<br>
                 匯款帳號：111004563297
             </div>
