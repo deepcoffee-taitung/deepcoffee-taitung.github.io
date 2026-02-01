@@ -1051,53 +1051,45 @@ window.addEventListener('touchmove', e => {
     if (e.touches.length > 1) isGestureLocked = true;
 }, {passive: true});
 
+// --- 優化後的觸控結束事件 ---
 window.addEventListener('touchend', e => {
-    // 💡 關鍵 2：如果進入過鎖定模式（多點觸控/平移），或者現在依然是放大狀態，絕對不換頁
     const currentScale = (window.visualViewport) ? window.visualViewport.scale : 1;
-    if (isGestureLocked || currentScale > 1.02) {
-        return; 
-    }
+    if (isGestureLocked || currentScale > 1.02) return;
 
-    if (currentPage === 2) return;
+    // 💡 核心修正：只要目前在「須知頁 (Index 2)」或之後的頁面，一律禁止滑動換頁
+    if (currentPage >= 2) return; 
 
-    // 💡 關鍵 3：文字選取中也不換頁
     if (window.getSelection().toString().length > 0) return;
 
     let diff = startX - e.changedTouches[0].clientX;
-    const threshold = 100; // 提高門檻，讓操作更紮實
+    const threshold = 100;
 
     if (Math.abs(diff) > threshold) {
-        if (diff > 0 && currentPage < 2) nextPage(); 
+        if (diff > 0 && currentPage < 6) nextPage(); 
         else if (diff < -threshold && currentPage > 0) prevPage();
     }
 }, {passive: true});
 
+// --- 優化後的滑鼠事件 ---
 window.addEventListener('mousedown', e => {
-    // 💡 1. 紀錄開始時的縮放比例
+    // 💡 核心修正：如果已經進入須知頁以後，滑鼠拖曳也不會換頁
+    if (currentPage >= 2) return;
+
     const startScale = (window.visualViewport) ? window.visualViewport.scale : 1;
     startX = e.clientX;
 
     const handleMouseUp = (me) => {
-        // 💡 2. 獲取結束時的縮放比例
         const currentScale = (window.visualViewport) ? window.visualViewport.scale : 1;
-
-        // 💡 3. 如果正在放大狀態 (scale > 1.05)，或是開始與結束時比例不同，則鎖定不換頁
         if (startScale > 1.05 || currentScale > 1.05) {
             window.removeEventListener('mouseup', handleMouseUp);
             return;
         }
 
-        // 💡 4. 如果滑鼠放開時正在選取文字，也禁止換頁
-        if (window.getSelection().toString().length > 0) {
-            window.removeEventListener('mouseup', handleMouseUp);
-            return;
-        }
-
         let diff = startX - me.clientX;
-        const threshold = 100; // 統一使用 100px 的穩定門檻
+        const threshold = 100;
 
         if (Math.abs(diff) > threshold) {
-            if (diff > threshold && currentPage < 2) nextPage();
+            if (diff > threshold && currentPage < 6) nextPage();
             else if (diff < -threshold && currentPage > 0) prevPage();
         }
         window.removeEventListener('mouseup', handleMouseUp);
