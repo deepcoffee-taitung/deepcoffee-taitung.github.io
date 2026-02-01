@@ -73,6 +73,8 @@
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important; 
             touch-action: pan-y; margin: 0;  /* 💡 確保沒有外邊距 */
             padding: 0; /* 💡 確保沒有內邊距 */;
+            /* 核心新增：強制橫向吸附 */
+            overflow: hidden;   /* ✅ 禁止原生水平捲動 */
         }
         
         .page {
@@ -1022,6 +1024,11 @@
 </div>
 
 <script>
+// iOS Safari: 阻止 pinch zoom / gesture 平移
+document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+document.addEventListener('gestureend', (e) => e.preventDefault(), { passive: false });
+
 let startX = 0;
 let currentPage = 0;
 let cart = [];
@@ -1029,9 +1036,7 @@ let products = [];
 const slider = document.getElementById('slider');
 const GAS_API = 'https://script.google.com/macros/s/AKfycbxAuM_YOnaQLaDzCfIXmsucHLfQqEzC8qfvMdlfIC9_m2yclWLIcXuaiZcihe2ZyzVg/exec'; 
 
-
-let isGestureLocked = false; // 💡 關鍵標記：是否進入多點觸控模式
-
+let isGestureLocked = false;
 window.addEventListener('touchstart', e => { 
     // 💡 1. 偵測開始時的縮放比例與手指數量
     const scale = (window.visualViewport) ? window.visualViewport.scale : 1;
@@ -1051,29 +1056,36 @@ window.addEventListener('touchmove', e => {
     if (e.touches.length > 1) isGestureLocked = true;
 }, {passive: true});
 
-// --- 優化後的觸控結束事件 ---
+// --- 優化後的觸控結束事件 (支援單向鎖定) ---
 window.addEventListener('touchend', e => {
     const currentScale = (window.visualViewport) ? window.visualViewport.scale : 1;
     if (isGestureLocked || currentScale > 1.02) return;
-
-    // 💡 核心修正：只要目前在「須知頁 (Index 2)」或之後的頁面，一律禁止滑動換頁
-    if (currentPage >= 2) return; 
 
     if (window.getSelection().toString().length > 0) return;
 
     let diff = startX - e.changedTouches[0].clientX;
     const threshold = 100;
 
-    if (Math.abs(diff) > threshold) {
-        if (diff > 0 && currentPage < 6) nextPage(); 
-        else if (diff < -threshold && currentPage > 0) prevPage();
+    // 💡 核心邏輯修改
+    if (diff > threshold) {
+        // 【往左滑 -> 下一頁】
+        // 限制：只有在 Index 0 和 1 (首頁、番外) 允許滑到下一頁
+        if (currentPage < 2) {
+            nextPage(); 
+        }
+    } else if (diff < -threshold) {
+        // 【往右滑 -> 上一頁】
+        // 限制：在 Index 2 (須知) 以內（含須知頁）允許滑回上一頁
+        if (currentPage > 0 && currentPage <= 2) {
+            prevPage();
+        }
     }
 }, {passive: true});
 
-// --- 優化後的滑鼠事件 ---
+// --- 優化後的滑鼠事件 (支援單向鎖定) ---
 window.addEventListener('mousedown', e => {
-    // 💡 核心修正：如果已經進入須知頁以後，滑鼠拖曳也不會換頁
-    if (currentPage >= 2) return;
+    // 💡 同步邏輯：如果已經在 Menu 之後 (Index > 2)，直接封鎖滑鼠拖曳
+    if (currentPage > 2) return;
 
     const startScale = (window.visualViewport) ? window.visualViewport.scale : 1;
     startX = e.clientX;
@@ -1088,9 +1100,10 @@ window.addEventListener('mousedown', e => {
         let diff = startX - me.clientX;
         const threshold = 100;
 
-        if (Math.abs(diff) > threshold) {
-            if (diff > threshold && currentPage < 6) nextPage();
-            else if (diff < -threshold && currentPage > 0) prevPage();
+        if (diff > threshold) {
+            if (currentPage < 2) nextPage();
+        } else if (diff < -threshold) {
+            if (currentPage > 0 && currentPage <= 2) prevPage();
         }
         window.removeEventListener('mouseup', handleMouseUp);
     };
@@ -1130,11 +1143,28 @@ function nextPage() {
 function prevPage() { if (currentPage > 0) { currentPage--; updateSlider(); } }
 
 function updateSlider() {
+    const slider = document.getElementById('slider');
+    
+    // 💡 恢復使用百分比位移，這樣不論怎麼滑，JS 都只會移動「一格」
     slider.style.transform = `translateX(-${currentPage * (100 / 7)}%)`;
+
+    // 更新進度條
     document.getElementById('progress').style.width = `${((currentPage + 1) / 7) * 100}%`;
+    
     if (currentPage === 2) {
-    showGuide('daily');
-  }
+        showGuide('daily');
+    }
+}
+
+function fixAfterResize(){
+  updateSlider();        // 重套 transform
+  slider.scrollLeft = 0; // 保險：避免殘留 scroll
+}
+
+window.addEventListener('resize', fixAfterResize);
+
+if (window.visualViewport){
+  window.visualViewport.addEventListener('resize', fixAfterResize);
 }
 
 function showGuide(type) {
