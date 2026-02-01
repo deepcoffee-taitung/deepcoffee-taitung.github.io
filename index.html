@@ -633,6 +633,11 @@
                 padding-top: 8vh !important; 
                 overflow: hidden !important;
             }
+
+            .page-guide .guide-tabs .guide-btn-mobile {
+                font-size: 1.8rem !important; /* 原本跟隨 nav-btn 是 1.4rem，現在加大到 1.8rem */
+                letter-spacing: 1px !important;
+            }
             
             .guide-body {
                 font-family: 'LXGW WenKai TC', 'Microsoft JhengHei', sans-serif !important;
@@ -852,7 +857,7 @@
                 若同時訂購當日商品與預訂商品，請分開下單～
             </div>
 
-            <div class="guide-tabs" style="display:flex; justify-content:center; gap:30px; margin-bottom:40px; height:10px;">
+            <div class="guide-tabs" style="display:flex; justify-content:center; gap:40px; margin-bottom:40px; height:10px;">
                 <button class="nav-btn guide-btn guide-btn-mobile" data-guide="daily" onclick="showGuide('daily')">當日商品</button>
                 <button class="nav-btn guide-btn guide-btn-mobile" data-guide="preorder" onclick="showGuide('preorder')">預訂商品</button>
             </div>
