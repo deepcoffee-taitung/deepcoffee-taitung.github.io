@@ -79,20 +79,17 @@
         
         .page {
             width: 100vw !important;
-            height: 100vh;
+            height: 100vh; /* 確保佔滿全螢幕高度 */
             display: flex; 
             flex-direction: column;
             align-items: center; 
-            /* 💡 改為 flex-start，確保長內容從頂部開始排，不會被推到螢幕外 */
-            justify-content: flex-start !important; 
-            padding: 0;
+            justify-content: center; /* 💡 這是垂直置中的關鍵 */
+            padding: 0; /* 💡 先將 padding 設為 0，避免推擠內容 */
             margin: 0;
             box-sizing: border-box;
             flex-shrink: 0;
-            /* 💡 核心修正：開啟垂直捲動，禁止水平捲動 */
-            overflow-y: auto !important; 
-            overflow-x: hidden !important;
-            -webkit-overflow-scrolling: touch; /* 讓 iPhone 滑動更順暢 */
+            overflow: hidden !important;
+            overflow-x: hidden;
             position: relative;
         }
 
@@ -419,7 +416,6 @@
         .page-checkout {
             /* 核心：從頂部開始排列，不再居中 */
             justify-content: flex-start !important; 
-            min-height: min-content; /* 確保內容能完整撐開容器 */
             padding-top: 3vh; 
         }
 
@@ -635,7 +631,7 @@
             }
 
             .page-guide .guide-tabs .guide-btn-mobile {
-                font-size: 1.8rem !important; /* 原本跟隨 nav-btn 是 1.4rem，現在加大到 1.8rem */
+                font-size: 1.6rem !important; /* 原本跟隨 nav-btn 是 1.4rem，現在加大到 1.8rem */
                 letter-spacing: 1px !important;
             }
             
@@ -767,20 +763,6 @@
                 font-weight: bold;
                 margin-bottom: 8px;
             }
-        }
-
-        /* 💡 針對手機自動生成的撥號連結進行樣式修正 */
-        a[href^="tel"], 
-        a[href^="sms"] {
-            color: inherit !important;      /* 💡 強制跟隨父層的顏色（例如您的深藍或咖啡色） */
-            text-decoration: none !important; /* 💡 移除自動產生的底線 */
-            font-family: inherit !important;  /* 💡 確保字體維持您的手寫感 */
-            font-weight: inherit !important;
-        }
-
-        /* 針對 iOS 設備的額外保險 */
-        .allow-select {
-            -webkit-tap-highlight-color: transparent; /* 點擊時不會出現閃爍的灰色方塊 */
         }
     </style>
 </head>
@@ -993,7 +975,7 @@
     
             <div class="nav-footer">
                 <button class="nav-btn" id="submit-btn" onclick="submitOrder()" style="text-decoration: underline;">確認並提交訂單</button>
-                <span class="prev-link" style="font-size: 1rem; margin-top: 10px;" onclick="prevPage()">回上一頁修改</span>
+                <span class="prev-link" style="font-size: 1rem;" onclick="prevPage()">回上一頁修改</span>
             </div>
         </div>
     </section>
@@ -1047,24 +1029,6 @@
 </div>
 
 <script>
-// iOS Safari: 阻止 pinch zoom / gesture 平移
-document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
-document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
-document.addEventListener('gestureend', (e) => e.preventDefault(), { passive: false });
-
-let lastTouchEnd = 0;
-
-document.addEventListener('touchend', (e) => {
-  const now = Date.now();
-
-  // 兩下 touchend 間隔很短 -> 視為雙擊
-  if (now - lastTouchEnd <= 300) {
-    e.preventDefault();   // 阻止雙擊縮放
-  }
-
-  lastTouchEnd = now;
-}, { passive: false });
-
 let startX = 0;
 let currentPage = 0;
 let cart = [];
@@ -1072,7 +1036,13 @@ let products = [];
 const slider = document.getElementById('slider');
 const GAS_API = 'https://script.google.com/macros/s/AKfycbxAuM_YOnaQLaDzCfIXmsucHLfQqEzC8qfvMdlfIC9_m2yclWLIcXuaiZcihe2ZyzVg/exec'; 
 
+// iOS Safari: 阻止 pinch zoom / gesture 平移
+document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+document.addEventListener('gestureend', (e) => e.preventDefault(), { passive: false });
+
 let isGestureLocked = false;
+
 window.addEventListener('touchstart', e => { 
     // 💡 1. 偵測開始時的縮放比例與手指數量
     const scale = (window.visualViewport) ? window.visualViewport.scale : 1;
@@ -1121,7 +1091,7 @@ window.addEventListener('touchend', e => {
 // --- 優化後的滑鼠事件 (支援單向鎖定) ---
 window.addEventListener('mousedown', e => {
     // 💡 同步邏輯：如果已經在 Menu 之後 (Index > 2)，直接封鎖滑鼠拖曳
-    if (currentPage > 2) return;
+    if (currentPage > 3) return;
 
     const startScale = (window.visualViewport) ? window.visualViewport.scale : 1;
     startX = e.clientX;
@@ -1583,7 +1553,7 @@ async function submitOrder() {
     if (isDailyOrder) {
         msgDesktop = `感謝您的訂購！<br>請記得於 ${time} 至<strong>${address}</strong>取貨！`;
         msgMobile  =`感謝您的訂購！<br>請記得於 ${time}<br>
-        至<strong style="font-family:'LXGW WenKai TC', sans-serif !important; color: #30305f;">${address}</strong> 取貨！`;
+        至<strong style="font-family:'LXGW WenKai TC', sans-serif !important; color: #30305f;">${address}</strong>取貨！`;
     } else if (hasPreorder) {
         msgDesktop = `
         感謝您的訂購！<strong>請務必主動私訊我們的 IG</strong> ～<br>
