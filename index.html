@@ -934,7 +934,7 @@
     <section class="page page-checkout">
         <div class="content-card" style="max-width: 650px;">
             <h3 style="margin-bottom: 10px; font-size: 1.8rem; color: #353569;">結帳資訊</h3>
-            <div class="allow-select" style="font-weight: bold; font-size: 1.1rem; margin-top: 0px; margin-bottom: 15px; color: #3e2723; text-align:left; line-height: 1.8;">
+            <div id="bank-info-section" class="allow-select" style="font-weight: bold; font-size: 1.1rem; margin-top: 0px; margin-bottom: 15px; color: #3e2723; text-align:left; line-height: 1.8;">
                 匯款帳戶：824 連線商業銀行 （6880 總行）<br>
                 匯款帳號：111004563297
             </div>
@@ -1427,6 +1427,12 @@ function showCheckout() {
     if (hasDaily && hasPreorder) {
         alert("溫馨提示：當日商品與預約商品需分開下單，請調整購物車內容，謝謝您！");
         return;
+    }
+
+    // 💡 關鍵修正：根據是否有當日商品，切換匯款資訊的顯示
+    const bankSection = document.getElementById('bank-info-section');
+    if (bankSection) {
+        bankSection.style.display = hasDaily ? 'block' : 'none';
     }
 
     // 2. 根據類別顯示/隱藏區塊
