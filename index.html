@@ -371,6 +371,33 @@
             margin: 0 auto;
         }
 
+        /* 冷熱切換按鈕容器 */
+        .temp-selector {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        /* 基礎按鈕樣式 */
+        .temp-btn {
+            background: none;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 2px 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: #9898ba;
+            transition: all 0.3s;
+        }
+
+        /* 選中狀態：深藍色背景 */
+        .temp-btn.active {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            font-weight: bold;
+        }
+
         /* 庫存文字再縮小一點點 */
         .stock-text {
             font-size: 1.1rem !important;
@@ -689,7 +716,7 @@
             /* 2. 縮小分類按鈕 (當日飲品/甜點等) */
             .cat-btn {
                 /* 將原本的 1.4rem 縮小，例如改為 1.1rem，避免按鈕擠在一起 */
-                font-size: 1.6rem !important;
+                font-size: 1.4rem !important;
                 padding: 5px 8px !important; /* 同步稍微縮小按鈕內距，爭取空間 */
             }
     
@@ -882,8 +909,9 @@
     <section class="page page-menu">
         <div class="content-card">
             <h3 class="handwriting-elegant" style="margin-top:0; color: #353569; font-size: 3.2rem;">Menu</h3>
-            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;">
-                <button class="nav-btn cat-btn" style="padding: 5px 12px;" onclick="renderProductsByCat('當日飲品')">當日飲品</button>
+            <div style="display: flex; justify-content: center; gap: 5px; margin-bottom: 15px;">
+                <button class="nav-btn cat-btn" style="padding: 5px 12px;" onclick="renderProductsByCat('當日義式')">當日義式</button>
+                <button class="nav-btn cat-btn" style="padding: 5px 12px;" onclick="renderProductsByCat('當日茶飲')">當日茶飲</button>
                 <button class="nav-btn cat-btn" style="padding: 5px 12px;" onclick="renderProductsByCat('當日甜點')">當日甜點</button>
                 <button class="nav-btn cat-btn" style="padding: 5px 12px;" onclick="renderProductsByCat('預約甜點')">預訂商品</button>
             </div>
@@ -1049,6 +1077,7 @@ let startX = 0;
 let currentPage = 0;
 let cart = [];
 let products = [];
+let productSelections = {}; // 紀錄每個商品名稱對應的溫度，例如 {'美式': 'Cold'}
 const slider = document.getElementById('slider');
 const GAS_API = 'https://script.google.com/macros/s/AKfycbxAuM_YOnaQLaDzCfIXmsucHLfQqEzC8qfvMdlfIC9_m2yclWLIcXuaiZcihe2ZyzVg/exec'; 
 
@@ -1287,13 +1316,13 @@ async function init() {
         const resp = await fetch(GAS_API);
         products = await resp.json();
         // 不要直接呼叫 renderProducts，改呼叫 renderProductsByCat 來啟動變色與說明
-        renderProductsByCat('當日飲品');
+        renderProductsByCat('當日義式');
     } catch (err) {
         document.getElementById('product-list').innerHTML = "目前無法連線至資料庫";
     }
 }
 
-let currentCategory = '當日飲品';
+let currentCategory = '當日義式';
 function renderProductsByCat(cat) {
     currentCategory = cat;
     // 取得說明文字的區塊
@@ -1338,35 +1367,52 @@ function renderProducts(data) {
 
     listDiv.innerHTML = filteredData.map((p) => {
         const realIndex = products.findIndex(item => item.name === p.name);
-        const cartItem = cart.find(item => item.name === p.name);
-        const count = cartItem ? cartItem.qty : 0;
-        const currentAvailable = p.stock - count;
-        const out = currentAvailable <= 0;
+        
+        // 💡 判斷當前 UI 選中的溫度 (預設 Hot)
+        if (p.temp_option === 'Y' && !productSelections[p.name]) {
+            productSelections[p.name] = 'Hot';
+        }
+        const currentTemp = productSelections[p.name] || '';
 
-        // 💡 核心修改：判斷 p.img 是否有值 (且不是空字串)
+        // 💡 動態價格：冰飲且有加價時，顯示加價後的金額
+        const basePrice = parseInt(p.price);
+        const coldExtra = (currentTemp === 'Cold' && p.temp_option === 'Y') ? parseInt(p.cold_extra || 0) : 0;
+        const displayPrice = basePrice + coldExtra;
+
+        // 💡 購物車查找：需同時符合「名稱」與「溫度」
+        const cartItem = cart.find(item => item.name === p.name && item.temp === currentTemp);
+        const count = cartItem ? cartItem.qty : 0;
+        const out = (p.stock - count) <= 0;
+
         const imgHtml = (p.img && p.img.trim() !== "") 
-            ? `<img src="${p.img}" class="product-img" onerror="this.style.display='none'" alt="${p.name}">` 
-            : "";
+            ? `<img src="${p.img}" class="product-img" onerror="this.style.display='none'" alt="${p.name}">` : "";
+
+        // 💡 冷熱按鈕 HTML
+        const tempSelectorHtml = (p.temp_option === 'Y') ? `
+            <div class="temp-selector">
+                <button class="temp-btn ${currentTemp === 'Hot' ? 'active' : ''}" onclick="changeTemp('${p.name}', 'Hot')">熱</button>
+                <button class="temp-btn ${currentTemp === 'Cold' ? 'active' : ''}" onclick="changeTemp('${p.name}', 'Cold')">冰</button>
+            </div>
+        ` : "";
 
         return `
             <div class="product">
                 ${imgHtml}
-
                 <div class="product-info">
                     <h4 style="margin:0; font-size:1.5rem;">${p.name}</h4>
+                    ${tempSelectorHtml}
                 </div>
-                
                 <div class="product-price-section">
                     <span class="stock-text" style="color:${out ? '#ff4d4d' : '#888'};">
-                        ${out ? '已售完' : '剩餘 ' + currentAvailable}
+                        ${out ? '已售完' : '剩餘 ' + (p.stock - count)}
                     </span>
-                    <div class="price-text">$${p.price}</div>
+                    <div class="price-text">$${displayPrice}</div>
                     <div class="qty-controls">
                         ${count > 0 ? `
-                            <button class="qty-btn" onclick="removeFromCart(${realIndex})">−</button>
-                            <span style="font-weight:bold; min-width:20px; text-align:center; font-size:1rem;">${count}</span>
+                            <button class="qty-btn" onclick="updateCartQty('${p.name}', '${currentTemp}', -1)">−</button>
+                            <span style="font-weight:bold; min-width:20px; text-align:center;">${count}</span>
                         ` : ''}
-                        <button class="qty-btn" onclick="addToCart(${realIndex})" ${out?'style="opacity:0.2" disabled':''}>+</button>
+                        <button class="qty-btn" onclick="updateCartQty('${p.name}', '${currentTemp}', 1)" ${out?'style="opacity:0.2" disabled':''}>+</button>
                     </div>
                 </div>
             </div>
@@ -1374,46 +1420,72 @@ function renderProducts(data) {
     }).join('');
 }
 
-function addToCart(index) {
-    const p = products[index];
-    const item = cart.find(c => c.name === p.name);
-    
-    if(item) {
-        if(item.qty >= p.stock) return alert('庫存不足');
-        item.qty++;
-    } else {
-        cart.push({ name: p.name, price: p.price, qty: 1 });
+// 💡 切換 UI 上的溫度顯示 (維持不變)
+function changeTemp(name, temp) {
+    productSelections[name] = temp;
+    renderProducts(products);
+}
+
+// 💡 修改後的加入購物車邏輯
+// 💡 修正後的整合購物車增減邏輯
+function updateCartQty(name, temp, delta) {
+    // 1. 找到原始商品資料
+    const p = products.find(prod => prod.name === name);
+    if (!p) return;
+
+    // 2. 計算該溫度下的正確價格
+    const coldExtra = (temp === 'Cold' && p.temp_option === 'Y') ? parseInt(p.cold_extra || 0) : 0;
+    const finalPrice = parseInt(p.price) + coldExtra;
+
+    // 3. 尋找購物車中「名稱」且「溫度」完全符合的項目
+    const item = cart.find(c => c.name === name && c.temp === temp);
+
+    if (item) {
+        // 如果是增加數量，先檢查總庫存
+        if (delta > 0) {
+            const totalInCart = cart.filter(c => c.name === p.name).reduce((sum, i) => sum + i.qty, 0);
+            if (totalInCart >= p.stock) return alert('庫存不足');
+        }
+        
+        item.qty += delta;
+
+        // 如果數量歸零，從購物車移除
+        if (item.qty <= 0) {
+            const idx = cart.indexOf(item);
+            cart.splice(idx, 1);
+        }
+    } else if (delta > 0) {
+        // 如果是新加入，先檢查總庫存
+        const totalInCart = cart.filter(c => c.name === p.name).reduce((sum, i) => sum + i.qty, 0);
+        if (totalInCart >= p.stock) return alert('庫存不足');
+
+        cart.push({ 
+            name: name, 
+            price: finalPrice, 
+            qty: 1, 
+            temp: temp 
+        });
     }
-    
-    // 【更新】重新渲染商品列表，讓按鈕旁的數字更新
+
+    // 4. 更新畫面
     renderProducts(products);
     updateUI();
 }
 
-function removeFromCart(index) {
-    const p = products[index];
-    const itemIndex = cart.findIndex(c => c.name === p.name);
-    
-    if (itemIndex > -1) {
-        if (cart[itemIndex].qty > 1) {
-            cart[itemIndex].qty--;
-        } else {
-            cart.splice(itemIndex, 1); // 數量為 1 時，直接從陣列移除
-        }
-    }
-    
-    renderProducts(products); // 重新渲染列表
-    updateUI(); // 更新總金額與數量顯示
-}
-
+// 💡 修改後的 UI 更新 (計算總價)
 function updateUI() {
+    // 數量直接加總
     document.getElementById('count').innerText = cart.reduce((a, b) => a + b.qty, 0);
+    // 總價：因為每個 cart item 已存入 finalPrice，直接加總 qty * price 即可
     document.getElementById('total').innerText = cart.reduce((a, b) => a + (b.price * b.qty), 0);
 }
 
 function updateCheckoutSummary() {
     let total = document.getElementById('total').innerText;
-    let summary = cart.map(i => `${i.name} x ${i.qty}`).join("<br>");
+    let summary = cart.map(i => {
+        const tempLabel = i.temp === 'Hot' ? '(熱)' : (i.temp === 'Cold' ? '(冰)' : '');
+        return `${i.name}${tempLabel} x ${i.qty}`;
+    }).join("<br>");
     document.getElementById('cart-summary').innerHTML = summary + "<hr>總計: $" + total;
 }
 
@@ -1424,7 +1496,7 @@ function showCheckout() {
         return p ? p.category.trim() : "";
     });
 
-    const hasDaily = categories.some(cat => cat === '當日飲品' || cat === '當日甜點');
+    const hasDaily = categories.some(cat => cat === '當日義式' || cat === '當日茶飲' || cat === '當日甜點');
     const hasPreorder = categories.some(cat => cat === '預約甜點');
 
     // 💡 核心邏輯：若同時存在，提醒分開下單
@@ -1569,7 +1641,7 @@ async function submitOrder() {
         const p = products.find(prod => prod.name === item.name);
         return p ? p.category.trim() : "";
     });
-    const hasDaily = categories.some(cat => cat === '當日飲品' || cat === '當日甜點');
+    const hasDaily = categories.some(cat => cat === '當日義式' || cat === '當日茶飲' || cat === '當日甜點');
     const hasPreorder = categories.some(cat => cat === '預約甜點');
 
     const time = document.getElementById('pickup-time').value;
