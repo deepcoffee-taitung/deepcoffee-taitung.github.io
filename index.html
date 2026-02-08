@@ -193,6 +193,7 @@
         .guide-btn.active {
             color: #353569 !important; /* 與標題同色 */
             font-weight: bold !important;
+            text-shadow: 0.2px 0px 0px currentColor, -0.2px 0px 0px currentColor;
         }
 
         /* 防止內容切換時晃動 */
@@ -428,6 +429,7 @@
         .cat-btn.active {
             color: #353569 !important;
             font-weight: bold;
+            text-shadow: 0.2px 0px 0px currentColor, -0.2px 0px 0px currentColor;
         }
         
         /* ✅ 購物須知 tabs：強制覆蓋 nav-btn 的顏色 */
@@ -826,7 +828,7 @@
             <img src="logo.png" style="width: 80%; max-width: 200px; margin: 0 auto;" draggable="false">
         </div>
         <div class="nav-footer">
-            <div class="handwriting-natural" style="opacity: 0.6; font-size: 0.85rem; font-weight: bold; letter-spacing: 2px;">
+            <div class="handwriting-natural" style="opacity: 0.5; font-size: 0.85rem; font-weight: bold; letter-spacing: 2px;">
                 〈 向左滑動 〉
             </div>
         </div>
@@ -855,7 +857,7 @@
         </div>
         
         <div class="nav-footer">
-            <div class="handwriting-natural" style="opacity: 0.6; font-size: 0.85rem; font-weight: bold; letter-spacing: 2px;">〈 向左滑動 〉</div>
+            <div class="handwriting-natural" style="opacity: 0.5; font-size: 0.85rem; font-weight: bold; letter-spacing: 2px;">〈 向左滑動 〉</div>
         </div>        
     </section>
 
@@ -907,8 +909,8 @@
         <div class="guide-footer">
             <button class="chinese-handwriting" 
                     onclick="nextPage()" 
-                    style="background: none; border: none; color: inherit; cursor: pointer; opacity: 0.6; font-size: 1.3rem;
-                            letter-spacing: 2px; padding: 0; font-weight: 900 !important; text-shadow: 0.3px 0px 0px currentColor, -0.3px 0px 0px currentColor; text-decoration: underline !important;">
+                    style="background: none; border: none; color: inherit; cursor: pointer; opacity: 0.5; font-size: 1.3rem;
+                            letter-spacing: 2px; padding: 0; font-weight: 900 !important; text-shadow: 0.2px 0px 0px currentColor, -0.2px 0px 0px currentColor; text-decoration: underline !important;">
                 我已詳細閱讀並同意，點擊前往選購
             </button>
         </div>       
@@ -931,7 +933,7 @@
                 <div style="margin-top:15px; text-align:right; font-weight:bold; font-size:1.2rem; color: #353569;">
                     購物車(<span id="count">0</span>) 總計: $<span id="total">0</span>
                 </div>
-                <button class="nav-btn" onclick="showCheckout()" style = "text-decoration: underline; text-shadow: 0.3px 0px 0px currentColor, -0.3px 0px 0px currentColor;">前往結帳</button>                
+                <button class="nav-btn" onclick="showCheckout()" style = "text-decoration: underline; text-shadow: 0.2px 0px 0px currentColor, -0.2px 0px 0px currentColor;">前往結帳</button>                
             </div>
         </div>
     </section>
@@ -965,7 +967,7 @@
     </div>
 
     <div class="nav-footer" style="margin-top: 20px;">
-        <button class="nav-btn" onclick="nextPage()" style="text-decoration: underline; text-shadow: 0.3px 0px 0px currentColor, -0.3px 0px 0px currentColor;">我已了解</button>
+        <button class="nav-btn" onclick="nextPage()" style="text-decoration: underline; text-shadow: 0.2px 0px 0px currentColor, -0.2px 0px 0px currentColor;">我已了解</button>
         <span class="prev-link" style="font-size: 1rem;" onclick="prevPage()">返回修改購物車</span>
     </div>
 </section>
@@ -1026,7 +1028,7 @@
             </div>
     
             <div class="nav-footer">
-                <button class="nav-btn" id="submit-btn" onclick="submitOrder()" style="text-decoration: underline; text-shadow: 0.3px 0px 0px currentColor, -0.3px 0px 0px currentColor;">確認並提交訂單</button>
+                <button class="nav-btn" id="submit-btn" onclick="submitOrder()" style="text-decoration: underline; text-shadow: 0.2px 0px 0px currentColor, -0.2px 0px 0px currentColor;">確認並提交訂單</button>
                 <span class="prev-link" style="font-size: 1rem; margin-top: 10px;" onclick="prevPage()">回上一頁修改</span>
             </div>
         </div>
