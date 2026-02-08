@@ -684,14 +684,14 @@
             }
 
             /* 💡 1. 縮小注意事項大標題，讓視覺重心平衡 */
-            .page:nth-of-type(5) h3 {
+            .page:nth-of-type(4) h3 {
                 font-size: 2.0rem !important;
                 margin-top: 90px;
                 margin-bottom: 20px !important;
             }
 
             /* 💡 2. 調整列表文字排列：稍微縮小字級並增加行距 */
-            .page:nth-of-type(5) .chinese-handwriting {
+            .page:nth-of-type(4) .chinese-handwriting {
                 font-size: 1.3rem !important; /* 稍微縮小，避免換行雜亂 */
                 line-height: 1.8 !important;   /* 增加行距，提升閱讀舒適度 */
            }
@@ -704,13 +704,28 @@
                     -0.15px 0px 0px currentColor; /* 左右各加粗 1px */
             }
 
-            .page:nth-of-type(6) {
+            .page:nth-of-type(5) {
                 padding-top: 12vh !important; /* 12vh 的垂直空間 */
             }
 
-            .page:nth-of-type(6) .nav-footer {
+            .page:nth-of-type(5) .nav-footer {
                 margin-top: 30px !important;
                 margin-bottom: 40px !important;   /* 確保距離底部有足夠空間 */
+            }
+
+            .page:nth-of-type(5) .prev-link {
+                font-size: 1.2rem !important;
+                margin-top: -10px !important;
+                font-ewight: bold !important;
+                text-shadow: 
+                    0.15px 0px 0px currentColor, 
+                    -0.15px 0px 0px currentColor; /* 左右各加粗 1px */
+            }
+
+            .page:nth-of-type(5) h3 {
+                font-size: 2.0rem !important;
+                margin-top: 90px;
+                margin-bottom: 20px !important;
             }
 
             .page:nth-of-type(6) .prev-link {
@@ -720,12 +735,6 @@
                 text-shadow: 
                     0.15px 0px 0px currentColor, 
                     -0.15px 0px 0px currentColor; /* 左右各加粗 1px */
-            }
-
-            .page:nth-of-type(6) h3 {
-                font-size: 2.0rem !important;
-                margin-top: 90px;
-                margin-bottom: 20px !important;
             }
 
             /* 2. 縮小分類按鈕 (當日飲品/甜點等) */
