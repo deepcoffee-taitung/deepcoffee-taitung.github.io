@@ -1668,12 +1668,9 @@ async function submitOrder() {
     btn.innerText = "訂單傳送中...";
 
     // 💡 1. 準備訊息所需的資料
-    const categories = cart.map(item => {
-        const p = products.find(prod => prod.name === item.name);
-        return p ? p.category.trim() : "";
-    });
-    const hasDaily = categories.some(cat => ['當日義式', '當日茶飲', '當日甜點'].includes(cat));
-    const hasPreorder = categories.some(cat => cat === '預約甜點');
+    
+    const hasDaily = cart.some(item => ['當日義式', '當日茶飲', '當日甜點'].includes(item.category));
+    const hasPreorder = cart.some(item => item.category === '預約甜點');
 
     const time = document.getElementById('pickup-time').value;
     const date = document.getElementById('delivery-date').value;
