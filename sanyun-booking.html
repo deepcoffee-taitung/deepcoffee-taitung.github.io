@@ -73,7 +73,7 @@ h3 { font-size: 1.8rem; }
 }
 .info-body strong { color: #30305f; font-weight: 700 !important; font-family: inherit !important; }
 .info-body .facility-block { margin-bottom: 22px; font-size: 1.38rem; line-height: 2; }
-.info-body .sub-note { display: block; padding-left: 1.5em; font-size: 0.82em; font-weight: 600; color: #6a6a95; margin-top: 2px; }
+.info-body .sub-note { display: block; padding-left: 1.5em; font-size: 0.82em; font-weight: 600; color: #6a6a95; margin-top: 2px; font-family: inherit !important; }
 .info-body .facility-title {
     font-family: 'Caveat', cursive !important; font-size: 1.4rem; font-weight: 700;
     color: #353569; margin-bottom: 6px; display: block;
@@ -99,7 +99,7 @@ h3 { font-size: 1.8rem; }
     width: 100%; text-align: left; padding: 10px 0; margin: 0 !important;
 }
 .guide-body strong { font-family: inherit !important; font-weight: 700 !important; color: #30305f !important; }
-.guide-body .sub-line { display: block; padding-left: 1.4em; }
+.guide-body .sub-line { display: block; padding-left: 1.4em; font-family: inherit !important; }
 .page-guide .guide-footer {
     flex: 0 0 auto; width: 100%; display: flex; justify-content: center; align-items: center;
     text-align: center; padding: 10px 0 50px !important; margin-top: auto;
@@ -167,9 +167,9 @@ input[type=file] { border-bottom: none !important; padding: 8px 0 !important; }
 
 /* 手機／電腦版排版切換小工具：預設隱藏手機專用內容、顯示電腦版內容，
    在 max-width:600px 的媒體查詢中再反過來 */
-.mobile-break { display: none; }
-.mobile-merge { display: none; }
-.desktop-break { display: inline; }
+.mobile-break { display: none; font-family: inherit !important; }
+.mobile-merge { display: none; font-family: inherit !important; }
+.desktop-break { display: inline; font-family: inherit !important; }
 
 @media (max-width: 600px) {
     html { font-size: 16px; }
@@ -239,7 +239,7 @@ input[type=file] { border-bottom: none !important; padding: 8px 0 !important; }
                     <strong>便利停車：</strong>小屋對面或附近皆有免費停車位置。<br>
                     <strong>簡易廚房：</strong>一樓備有簡易廚房與冰箱可使用（請於離開前清潔使用過的餐具）。<br>
                     <strong>生活選物：</strong>空間內的書籍與各項選物皆可選購，請愛惜使用（如有損壞需依價賠償）。<br>
-                    <strong>環保旅宿：</strong>提供浴巾、毛巾、吹風機、沐浴乳、洗髮精<span class="mobile-merge">，為響應環保，不提供牙刷、牙膏等個人盥洗用品。</span><span class="desktop-break">。</span>
+                    <strong>環保旅宿：</strong>提供浴巾、毛巾、吹風機、沐浴乳、洗髮精<span class="mobile-merge">。為響應環保，不提供牙刷、牙膏等個人盥洗用品。</span><span class="desktop-break">。</span>
                     <span class="desktop-break"><br><span class="sub-note">為響應環保，不提供牙刷、牙膏等個人盥洗用品。</span></span>
                 </div>
             </div>
