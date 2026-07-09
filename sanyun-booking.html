@@ -317,7 +317,7 @@ input[type=file] { border-bottom: none !important; padding: 8px 0 !important; }
             <input type="time" id="b-arrival" value="15:00">
 
             <label class="form-label">特殊需求 (選填)</label>
-            <textarea id="b-note" rows="2" placeholder="加床、素食、行動不便協助等，歡迎告訴我們"></textarea>
+            <textarea id="b-note" rows="2" placeholder="加床服務等，歡迎告訴我們"></textarea>
 
             <div class="nav-footer">
                 <button class="nav-btn" id="submit-btn" onclick="submitBooking()"
@@ -385,7 +385,7 @@ const CNY_DAY1 = {
 };
 // 農曆新年高峰期涵蓋幾晚：從「除夕」（初一前一晚）開始算，預設涵蓋到初五，共 6 晚
 // 想調整範圍（例如只算除夕到初三），改這個數字就好
-const LUNAR_NEW_YEAR_SPAN_NIGHTS = 6;
+const LUNAR_NEW_YEAR_SPAN_NIGHTS = 7;
 
 // 統一用「本地時間」組出 YYYY-MM-DD 字串，不要用 toISOString()
 // （toISOString 會轉成 UTC，在台灣這種 UTC+8 的時區，日期可能會被往前推一天，
@@ -405,7 +405,7 @@ function isLunarNewYearNight(dateStr) {
     const year = parseInt(dateStr.slice(0, 4), 10);
     const day1 = CNY_DAY1[year];
     if (!day1) return false; // 對照表沒有這一年，就當一般日期計算
-    const eve = addDays(day1, -1);                          // 除夕
+    const eve = addDays(day1, -2);                          // 除夕
     const rangeEnd = addDays(eve, LUNAR_NEW_YEAR_SPAN_NIGHTS); // 高峰期結束（不含這天）
     return dateStr >= eve && dateStr < rangeEnd;
 }
@@ -565,7 +565,7 @@ function updatePriceSummary() {
 
     summaryEl.innerHTML = `
         入住 ${nightsList.length} 晚 · ${adults} 位大人${children > 0 ? ' · ' + children + ' 位孩童' : ''}<br>
-        ${hasHoliday ? `房價為一般 $${BASE_PRICE}／跨年或農曆新年期間 $${HOLIDAY_PRICE}（每晚）` : `每晚房價：$${BASE_PRICE}`}
+        ${hasHoliday ? `房價一般為 $${BASE_PRICE}／晚；跨年或農曆新年期間 $${HOLIDAY_PRICE}／晚` : `每晚房價：$${BASE_PRICE}`}
         <hr>
         總計：$${total}
     `;
@@ -634,8 +634,8 @@ async function submitBooking() {
             document.getElementById('success-msg').innerHTML =
                 `感謝您的預訂！請於<strong>2 日內完成匯款</strong>，並於匯款後主動私訊我們的 Instagram，<br>
                 告知匯款帳號末 5 碼，我們確認後即完成訂房程序。<br><br>
-                匯款帳戶：824 連線商業銀行（6880 總行）<br>
-                匯款帳號：111004563297`;
+                匯款帳戶：803 聯邦銀行<br>
+                匯款帳號：888503516745`;
             currentPage = 5;
             updateSlider();
         } else {
