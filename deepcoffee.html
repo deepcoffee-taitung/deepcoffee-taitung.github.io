@@ -68,6 +68,11 @@
         .stock-text { font-size: 1.1rem !important; margin-bottom: -2px !important; }
         .price-text { font-size: 1.3rem; font-weight: bold; }
         .progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent); transition: width 0.3s; z-index: 1000; }
+        .home-link {
+            position: fixed; top: 14px; left: 18px; z-index: 1001;
+            font-size: 0.85rem; color: var(--accent); opacity: 0.5;
+            text-decoration: none; letter-spacing: 1px;
+        }
         .cat-btn { background: none !important; border: none !important; padding: 5px 10px !important; cursor: pointer; font-size: 1.6rem !important; color: #9898ba !important; transition: color 0.3s; box-shadow: none !important; }
         .cat-btn.active { color: #353569 !important; font-weight: bold; text-shadow: 0.2px 0px 0px currentColor, -0.2px 0px 0px currentColor; }
         .page-guide .guide-tabs .guide-btn { color: #9898ba !important; font-weight: bold !important; }
@@ -130,6 +135,7 @@
     </style>
 </head>
 <body>
+<a class="home-link" href="index.html">‹ 回首頁</a>
 <div class="progress-bar" id="progress"></div>
 <div class="slider-container" id="slider">
     <section class="page page-p1">
