@@ -65,6 +65,12 @@ body {
     font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif !important;
     font-weight: 300 !important; font-size: 0.7em;
 }
+.ttl-img {
+    height: 0.75em;
+    width: auto;
+    vertical-align: -0.05em;
+    display: inline-block;
+}
 .hub-card {
     display: flex;
     flex-direction: column;
@@ -78,12 +84,12 @@ body {
     text-align: center;
     box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
+    height: 140px;
 }
 .hub-card.deepcoffee {
     position: relative;
-    padding: 0;                 /* 圖片要貼齊邊緣，先把內距拿掉 */
-    height: 140px;              /* 按鈕的固定高度，維持原本大概的尺寸，可依實際感覺微調數字 */
-    overflow: hidden;           /* 確保圖片不會超出圓角外框 */
+    padding: 0;
+    overflow: hidden;
 }
 .hub-card.deepcoffee .card-fill-img {
     width: 100%;
@@ -120,7 +126,7 @@ body {
 </head>
 <body>
 
-    <div class="hub-logo"><span class="ttl-sanyun brand-font">三&nbsp;藴</span> <span class="ttl-cross">×</span> <span class="ttl-deepcoffee">deep coffee</span></div>
+    <div class="hub-logo"><span class="ttl-sanyun brand-font">三&nbsp;藴</span> <span class="ttl-cross">×</span> <img src="deepcoffee.png" alt="deep coffee" class="ttl-img"></div>
 
     <div class="hub-links">
         <a class="hub-card sanyun" href="sanyun-booking.html">
