@@ -79,6 +79,18 @@ body {
     box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+.hub-card.deepcoffee {
+    position: relative;
+    padding: 0;                 /* 圖片要貼齊邊緣，先把內距拿掉 */
+    height: 140px;              /* 按鈕的固定高度，維持原本大概的尺寸，可依實際感覺微調數字 */
+    overflow: hidden;           /* 確保圖片不會超出圓角外框 */
+}
+.hub-card.deepcoffee .card-fill-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;          /* 圖片等比例裁切填滿整個框，不會變形 */
+    display: block;
+}
 .hub-card:hover, .hub-card:active {
     transform: translateY(-3px);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
@@ -116,8 +128,7 @@ body {
             <span class="desc">民宿訂房 · 查看空房與須知</span>
         </a>
         <a class="hub-card deepcoffee" href="deepcoffee.html">
-            <img src="logo.png" class="card-logo" alt="Deep Coffee">
-            <span class="desc">限量甜點 · 咖啡點餐</span>
+            <img src="deepcoffee-button.jpg" class="card-fill-img" alt="Deep Coffee">
         </a>
     </div>
 
