@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>三蘊 SANYUN — 訂房</title>
+<title>三藴 SANYUN — 訂房</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Dancing+Script&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Chenyu-otf/chenyuluoyan_thin@main/ChenYuluoyan-2.0-Thin.ttf">
@@ -205,7 +205,7 @@ input[type=file] { border-bottom: none !important; padding: 8px 0 !important; }
     <!-- P0: Logo -->
     <section class="page page-p1">
         <div class="content-card">
-            <img src="logo-sanyun.svg" style="display:block; width: 60%; max-width: 260px; margin: 0 auto;" draggable="false" alt="三蘊 SANYUN">
+            <img src="logo-sanyun.svg" style="display:block; width: 60%; max-width: 260px; margin: 0 auto;" draggable="false" alt="三藴 SANYUN">
         </div>
         <div class="nav-footer">
             <div class="handwriting-natural" style="opacity:0.5; font-size:0.85rem; font-weight:bold; letter-spacing:2px;">〈 向左滑動 〉</div>
@@ -215,7 +215,7 @@ input[type=file] { border-bottom: none !important; padding: 8px 0 !important; }
     <!-- P1: 民宿介紹 -->
     <section class="page page-info page-intro">
         <div class="content-card">
-            <h3>關於三蘊</h3>
+            <h3>關於三藴</h3>
             <div class="info-body">
                 位於海邊的純白色二樓小屋<br>
                 如海浪般一層一層溫柔堆疊，<br>
@@ -316,7 +316,7 @@ input[type=file] { border-bottom: none !important; padding: 8px 0 !important; }
             <input type="time" id="b-arrival" value="15:00">
 
             <label class="form-label">特殊需求 (選填)</label>
-            <textarea id="b-note" rows="2" placeholder="加床、素食、行動不便協助等，歡迎告訴我們"></textarea>
+            <textarea id="b-note" rows="2" placeholder="需加床、訂餐或是接送服務等，歡迎告訴我們"></textarea>
 
             <div class="nav-footer">
                 <button class="nav-btn" id="submit-btn" onclick="submitBooking()"
@@ -330,14 +330,15 @@ input[type=file] { border-bottom: none !important; padding: 8px 0 !important; }
     <section class="page page-success">
         <div class="content-card">
             <h3 style="color:#4A484A; font-size:2.2rem; margin-bottom:10px;">訂房已送出</h3>
-            <p id="success-msg" class="chinese-handwriting allow-select" style="font-size:1.1rem; margin-bottom:20px; font-family:'LXGW WenKai TC', sans-serif !important; text-align:left; max-width:520px; margin-left:auto; margin-right:auto;">
-                感謝您的預訂！請於<strong>2 日內完成匯款</strong>，並於匯款後主動私訊我們的 Instagram，<br>
+            <p id="success-msg" class="chinese-handwriting allow-select" style="font-size:1rem; margin-bottom:20px; font-family:'LXGW WenKai TC', sans-serif !important; text-align:left; max-width:520px; margin-left:auto; margin-right:auto;">
+                感謝您的預訂！<br>
+                請於<strong> 2 日內完成匯款</strong>，並於匯款後主動私訊我們的 IG，<br>
                 告知匯款帳號末 5 碼，我們確認後即完成訂房程序。<br><br>
-                匯款帳戶：824 連線商業銀行（6880 總行）<br>
-                匯款帳號：111004563297
+                匯款帳戶：803 聯邦銀行<br>
+                匯款帳號：888503516745
             </p>
             <div class="success-links">
-                <a href="https://www.instagram.com/sunyun686?igsh=MTYzdTl4M2Fxa2Jvbg==" target="_blank" class="social-link" style="font-weight:bold;">三蘊 IG</a>
+                <a href="https://www.instagram.com/sunyun686?igsh=MTYzdTl4M2Fxa2Jvbg==" target="_blank" class="social-link" style="font-weight:bold;">三藴 IG</a>
                 <a href="https://www.instagram.com/deepcoffee241?igsh=NGE2MzZvcTIzNHM5" target="_blank" class="social-link" style="font-weight:bold;">Deep Coffee IG</a>
                 <button class="nav-btn" onclick="location.reload()" style="font-size:1.1rem !important; font-weight:normal !important; margin-top:20px;">回首頁再次訂房</button>
             </div>
@@ -386,7 +387,7 @@ const CNY_DAY1 = {
 //   from：從初一往前推幾天開始算（負數）。例如 -1 = 除夕、-2 = 小年夜
 //   to  ：算到初一之後第幾天（該晚也算進去）。例如 4 = 初五
 // 預設 { from:-1, to:4 } = 除夕算到初五，共 6 晚
-const LUNAR_NEW_YEAR_RANGE = { from: -1, to: 4 };
+const LUNAR_NEW_YEAR_RANGE = { from: -2, to: 4 };
 
 // 如果某一年想要不同範圍，才需要在這裡加一筆覆寫（優先於上面的預設值），格式一樣是 { from, to }
 // 範例：2027 年想從小年夜（初一前兩天）開始算到初五：
@@ -574,7 +575,7 @@ function updatePriceSummary() {
 
     summaryEl.innerHTML = `
         入住 ${nightsList.length} 晚 · ${adults} 位大人${children > 0 ? ' · ' + children + ' 位孩童' : ''}<br>
-        ${hasHoliday ? `房價為一般 $${BASE_PRICE}／跨年或農曆新年期間 $${HOLIDAY_PRICE}（每晚）` : `每晚房價：$${BASE_PRICE}`}
+        ${hasHoliday ? `房價一般為 $${BASE_PRICE}／晚；跨年或農曆新年期間 $${HOLIDAY_PRICE}／晚` : `每晚房價：$${BASE_PRICE}`}
         <hr>
         總計：$${total}
     `;
@@ -651,10 +652,11 @@ async function submitBooking() {
         const result = await resp.json();
         if (result.status === "Success") {
             document.getElementById('success-msg').innerHTML =
-                `感謝您的預訂！請於<strong>2 日內完成匯款</strong>，並於匯款後主動私訊我們的 Instagram，<br>
+                `感謝您的預訂！<br>
+                請於<strong> 2 日內完成匯款</strong>，並於匯款後主動私訊我們的 IG，<br>
                 告知匯款帳號末 5 碼，我們確認後即完成訂房程序。<br><br>
-                匯款帳戶：824 連線商業銀行（6880 總行）<br>
-                匯款帳號：111004563297`;
+                匯款帳戶：803 聯邦銀行<br>
+                匯款帳號：888503516745`;
             currentPage = 5;
             updateSlider();
         } else {
