@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>三蘊 SANYUN — 訂房</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Dancing+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Chenyu-otf/chenyuluoyan_thin@main/ChenYuluoyan-2.0-Thin.ttf">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-web@latest/style.css">
+
+<style>
+@font-face {
+    font-family: 'ChenYuLuoYan';
+    src: url('https://cdn.jsdelivr.net/gh/Chenyu-otf/chenyuluoyan_thin@main/ChenYuluoyan-2.0-Thin.ttf') format('truetype');
+    font-display: swap;
+}
+html { font-size: 20px; }
+:root { --primary: #ACAAAB; --accent: #4A484A; }
+*, body, html, input, button, select, textarea {
+    font-family: 'Caveat', 'ChenYuLuoYan', "Microsoft JhengHei", sans-serif !important;
+    -webkit-font-smoothing: antialiased; line-height: 1.6;
+}
+body {
+    margin: 0; padding: 0; height: 100%; width: 100%;
+    overflow: hidden; background-color: #F8F8F8;
+    user-select: none; -webkit-user-select: none;
+    color: var(--accent);
+}
+h1 { font-size: 2.2rem; }
+h3 { font-size: 1.8rem; }
+.handwriting-elegant { font-family: 'Dancing Script', cursive !important; font-size: 1.8rem; }
+.handwriting-natural { font-family: 'Caveat', cursive !important; font-size: 1.6rem; letter-spacing: 1px; }
+.chinese-handwriting { width: 100%; max-width: 90%; margin: 0 auto; }
+
+.home-link {
+    position: fixed; top: 14px; left: 18px; z-index: 1001;
+    font-size: 0.85rem; color: var(--accent); opacity: 0.5;
+    text-decoration: none; letter-spacing: 1px;
+}
+.slider-container {
+    display: flex; width: 600%; height: 100vh;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    touch-action: pan-y; margin: 0; padding: 0; overflow: hidden;
+}
+.page {
+    width: 100vw !important; height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: flex-start !important;
+    padding: 0; margin: 0; box-sizing: border-box; flex-shrink: 0;
+    overflow-x: hidden; overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch; position: relative;
+}
+.content-card {
+    background: none; box-shadow: none; padding: 0;
+    width: 90%; max-width: 800px; margin: 0 auto; text-align: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    overflow-wrap: break-word; word-wrap: break-word;
+}
+.page-p1 .content-card {
+    margin: auto 0 !important; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; height: auto;
+}
+.page-p1 .nav-footer { margin-top: 0; position: absolute; bottom: 50px; }
+
+.page-info { justify-content: flex-start !important; padding-top: 8vh; }
+.page-info .content-card { align-items: center; }
+.page-info h3 { margin-top: 0; margin-bottom: 42px; color: #4A484A; font-size: 2.4rem; }
+.info-body {
+    font-family: 'LXGW WenKai TC', 'Microsoft JhengHei', sans-serif !important;
+    font-size: 1rem; text-align: left; width: 100%; max-width: 620px;
+    margin: 0 auto; line-height: 1.9; color: #4A484A;
+}
+.info-body strong { color: #3A383A; font-weight: 700 !important; font-family: inherit !important; }
+.info-body .facility-block { margin-bottom: 22px; font-size: 1.38rem; line-height: 2; }
+.info-body .sub-note { display: block; padding-left: 1.5em; font-size: 0.82em; font-weight: 600; color: #7A787A; margin-top: 2px; font-family: inherit !important; }
+.info-body .facility-title {
+    font-family: 'Caveat', cursive !important; font-size: 1.4rem; font-weight: 700;
+    color: #4A484A; margin-bottom: 6px; display: block;
+}
+
+/* 民宿介紹頁：文字上下水平置中，字體與標題一致（手寫字體） */
+.page-intro { justify-content: center !important; padding-top: 0 !important; }
+.page-intro .content-card { justify-content: center; align-items: center; height: 100%; }
+.page-intro .info-body {
+    font-family: 'Caveat', 'ChenYuLuoYan', "Microsoft JhengHei", sans-serif !important;
+    text-align: center; font-size: 1.5rem; line-height: 2;
+}
+.page-intro .nav-footer { position: absolute; bottom: 50px; margin: 0; }
+
+.page-guide {
+    display: flex !important; flex-direction: column !important; height: 100vh !important;
+    justify-content: flex-start !important; padding-top: 5vh !important; overflow: hidden !important;
+}
+.page-guide .content-card { height: auto !important; flex: 1 1 auto; min-height: 0; overflow: visible !important; align-items: center; }
+.guide-body {
+    font-family: 'LXGW WenKai TC', 'Microsoft JhengHei', sans-serif !important;
+    flex: 1 1 auto; min-height: 0; overflow-y: auto !important; -webkit-overflow-scrolling: touch;
+    width: 100%; text-align: left; padding: 10px 0; margin: 0 !important;
+}
+.guide-body strong { font-family: inherit !important; font-weight: 700 !important; color: #3A383A !important; }
+.guide-body .sub-line { display: block; padding-left: 1.4em; font-family: inherit !important; }
+.page-guide .guide-footer {
+    flex: 0 0 auto; width: 100%; display: flex; justify-content: center; align-items: center;
+    text-align: center; padding: 10px 0 50px !important; margin-top: auto;
+}
+.page-guide .guide-title, .page-guide .guide-tabs { flex: 0 0 auto; }
+.guide-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; margin-bottom: 25px; }
+.nav-btn.guide-btn { font-size: 1.35rem !important; padding: 6px 4px !important; color: #ACAAAB !important; font-weight: bold !important; }
+.nav-btn.guide-btn.active { color: #4A484A !important; font-weight: bold !important; text-shadow: 0.2px 0px 0px currentColor, -0.2px 0px 0px currentColor; }
+
+.nav-btn {
+    background: none !important; border: none !important; color: var(--accent) !important;
+    font-size: 1.5rem !important; padding: 10px 0 !important; letter-spacing: 2px;
+    cursor: pointer; box-shadow: none !important; font-weight: 900 !important;
+}
+.nav-footer {
+    position: static; margin-top: auto; margin-bottom: 60px; width: 90%; max-width: 650px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px; box-sizing: border-box;
+}
+.nav-footer .nav-btn { width: auto !important; margin: 0 auto; }
+.prev-link { font-size: 1rem; text-decoration: underline; cursor: pointer; color: #666; }
+.progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent); transition: width 0.3s; z-index: 1000; }
+
+.page-form { justify-content: flex-start !important; padding-top: 3vh; }
+.page-form .content-card { justify-content: flex-start !important; padding-top: 0; min-height: min-content; align-items: center; }
+.form-flex-container { display: flex; gap: 30px; flex-wrap: wrap; width: 100%; }
+.form-column { flex: 1; min-width: 300px; max-width: 100%; text-align: left; }
+.form-label { font-weight: bold; display: block; text-align: left; font-size: 1.2rem; margin-top: 10px; color: #4A484A; }
+input, select, textarea {
+    width: 100%; border: none !important; border-bottom: 1px solid #ddd !important; border-radius: 0 !important;
+    background-color: transparent !important; padding: 5px 0px !important; margin-top: 0px;
+    font-size: 1.1rem !important; color: #302E2F; outline: none; box-sizing: border-box;
+}
+input:focus, select:focus, textarea:focus { border-bottom: 1.5px solid var(--accent) !important; }
+select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat; background-position: right 10px center; background-size: 10px;
+    padding-right: 25px; -webkit-appearance: none; appearance: none; background: none !important;
+}
+input[type=file] { border-bottom: none !important; padding: 8px 0 !important; }
+#photo-preview {
+    margin-top: 10px; max-width: 160px; max-height: 100px; border-radius: 6px;
+    display: none; object-fit: cover; border: 1px solid #ddd;
+}
+#price-summary {
+    width: 100%; max-width: 600px; margin: 10px auto 15px; background: #f5f5f5;
+    padding: 15px !important; border-radius: 8px; font-size: 1.05rem; color: #4A484A;
+    box-sizing: border-box; text-align: left; font-weight: bold;
+}
+#price-summary hr { border: 0; border-top: 1px solid #ddd; margin: 8px 0; }
+#submit-btn {
+    width: 100%; height: 38px; margin-top: 20px; background-color: var(--accent);
+    color: white; border: none; border-radius: 6px; font-size: 1.0rem; cursor: pointer; display: block;
+}
+
+.page-success .content-card { margin: auto 0 !important; padding: 20px; }
+.success-links { width: 100%; max-width: 800px; padding-top: 25px; }
+.social-link {
+    display: block; text-decoration: none; color: var(--accent); font-size: 1.4rem;
+    padding: 8px 0; margin-bottom: 5px; border-bottom: 1px solid rgba(74, 72, 74, 0.05); transition: opacity 0.3s;
+}
+.social-link:hover { opacity: 0.6; }
+.allow-select, .allow-select strong { user-select: text !important; -webkit-user-select: text !important; cursor: text; }
+#success-msg strong { font-family: inherit !important; color: #3A383A; }
+
+/* 手機／電腦版排版切換小工具：預設隱藏手機專用內容、顯示電腦版內容，
+   在 max-width:600px 的媒體查詢中再反過來 */
+.mobile-break { display: none; font-family: inherit !important; }
+.mobile-merge { display: none; font-family: inherit !important; }
+.desktop-break { display: inline; font-family: inherit !important; }
+
+@media (max-width: 600px) {
+    html { font-size: 16px; }
+    .content-card { width: 100% !important; margin: 0 auto !important; padding: 10px 20px !important; box-sizing: border-box !important; align-items: center !important; }
+    h3 { font-size: 1.6rem; }
+    .page-info h3 { font-size: 1.9rem; }
+    .info-body { font-size: 1.05rem; }
+    .info-body .facility-block { font-size: 1.2rem; }
+    .page-intro .info-body { font-size: 1.4rem; }
+    .guide-body { font-size: 0.85rem !important; }
+    .form-column { min-width: 100%; }
+    .form-label { font-size: 1.5rem !important; margin-bottom: 4px !important; }
+    input, select, textarea { font-size: 1.3rem !important; font-weight: bold !important; padding: 10px 0 !important; }
+    #price-summary { font-size: 1.3rem !important; padding: 14px !important; line-height: 1.7; }
+    .guide-tabs { gap: 10px 14px; margin-bottom: 20px; }
+    .nav-btn.guide-btn { font-size: 1.3rem !important; }
+    .info-body strong { font-size: 1.1em; }
+
+    /* 手機版排版切換：換行、句子合併等版面調整只在手機生效 */
+    .mobile-break { display: block; }
+    .mobile-merge { display: inline; }
+    .desktop-break { display: none; }
+}
+</style>
+</head>
+<body>
+
+<a class="home-link" href="index.html">‹ 回首頁</a>
+<div class="progress-bar" id="progress"></div>
+
+<div class="slider-container" id="slider">
+
+    <!-- P0: Logo -->
+    <section class="page page-p1">
+        <div class="content-card">
+            <img src="image.svg" style="display:block; width: 60%; max-width: 260px; margin: 0 auto;" draggable="false" alt="三蘊 SANYUN">
+        </div>
+        <div class="nav-footer">
+            <div class="handwriting-natural" style="opacity:0.5; font-size:0.85rem; font-weight:bold; letter-spacing:2px;">〈 向左滑動 〉</div>
+        </div>
+    </section>
+
+    <!-- P1: 民宿介紹 -->
+    <section class="page page-info page-intro">
+        <div class="content-card">
+            <h3>關於三蘊</h3>
+            <div class="info-body">
+                位於海邊的純白色二樓小屋<br>
+                如海浪般一層一層溫柔堆疊，<br>
+                讓色彩斑斕的旅程、厚實沉穩的故事，<br>
+                都漂浮在極盡放鬆的真空裡，<br class="mobile-break">疊疊織就。
+            </div>
+        </div>
+        <div class="nav-footer">
+            <div class="handwriting-natural" style="opacity:0.5; font-size:0.85rem; font-weight:bold; letter-spacing:2px;">〈 向左滑動 〉</div>
+        </div>
+    </section>
+
+    <!-- P2: 空間設施 -->
+    <section class="page page-info">
+        <div class="content-card">
+            <h3>關於空間與設施</h3>
+            <div class="info-body">
+                <div class="facility-block">
+                    <strong>獨享空間：</strong>每次僅接待一組客人。<br>
+                    <strong>便利停車：</strong>小屋對面或附近皆有免費停車位置。<br>
+                    <strong>簡易廚房：</strong>一樓備有簡易廚房與冰箱可使用（請於離開前清潔使用過的餐具）。<br>
+                    <strong>生活選物：</strong>空間內的書籍與各項選物皆可選購，請愛惜使用（如有損壞需依價賠償）。<br>
+                    <strong>環保旅宿：</strong>提供浴巾、毛巾、吹風機、沐浴乳、洗髮精<span class="mobile-merge">，為響應環保，不提供牙刷、牙膏等個人盥洗用品。</span><span class="desktop-break">。</span>
+                    <span class="desktop-break"><br><span class="sub-note">為響應環保，不提供牙刷、牙膏等個人盥洗用品。</span></span>
+                </div>
+            </div>
+        </div>
+        <div class="nav-footer">
+            <div class="handwriting-natural" style="opacity:0.5; font-size:0.85rem; font-weight:bold; letter-spacing:2px;">〈 向左滑動 〉</div>
+        </div>
+    </section>
+
+    <!-- P3: 訂房須知（分頁 tabs） -->
+    <section class="page page-guide">
+        <div class="content-card">
+            <h3 class="guide-title" style="color:#4A484A; font-size:2.2rem; margin:0 0 10px 0;">訂房須知</h3>
+            <div class="guide-tabs">
+                <button class="nav-btn guide-btn" data-guide="process" onclick="showGuide('process')">訂房流程</button>
+                <button class="nav-btn guide-btn" data-guide="stay" onclick="showGuide('stay')">入住／退房須知</button>
+                <button class="nav-btn guide-btn" data-guide="cancel" onclick="showGuide('cancel')">取消改期政策</button>
+                <button class="nav-btn guide-btn" data-guide="reminder" onclick="showGuide('reminder')">貼心小提醒</button>
+            </div>
+            <div id="guide-content" class="guide-body"></div>
+        </div>
+        <div class="guide-footer">
+            <button class="chinese-handwriting" onclick="nextPage()"
+                style="background:none; border:none; color:#4A484A; font-size:1.3rem; letter-spacing:2px; padding:0; font-weight:900 !important; text-shadow:0.15px 0px 0px currentColor, -0.15px 0px 0px currentColor; text-decoration:underline !important;">
+                我已詳細閱讀並同意，<br>前往填寫訂房資訊
+            </button>
+        </div>
+    </section>
+
+    <!-- P4: 訂房資訊表單 -->
+    <section class="page page-form">
+        <div class="content-card" style="max-width:650px;">
+            <h3 style="margin-bottom:15px; font-size:2rem; color:#4A484A;">訂房資訊</h3>
+
+            <div class="form-flex-container">
+                <div class="form-column">
+                    <label class="form-label">姓名</label>
+                    <input type="text" id="b-name" placeholder="請輸入您的姓名">
+
+                    <label class="form-label">聯絡電話</label>
+                    <input type="tel" id="b-phone" placeholder="請輸入手機號碼">
+
+                    <label class="form-label">護照 / 身分證照片</label>
+                    <input type="file" id="b-photo" accept="image/*">
+                    <img id="photo-preview">
+                </div>
+
+                <div class="form-column">
+                    <label class="form-label">入住日期</label>
+                    <input type="date" id="b-checkin">
+
+                    <label class="form-label">退房日期</label>
+                    <input type="date" id="b-checkout">
+
+                    <label class="form-label">入住成人人數</label>
+                    <select id="b-adults">
+                        <option value="1">1 位大人</option>
+                        <option value="2" selected>2 位大人</option>
+                        <option value="3">3 位大人</option>
+                        <option value="4">4 位大人</option>
+                    </select>
+
+                    <label class="form-label">孩童人數</label>
+                    <select id="b-children">
+                        <option value="0" selected>0 位</option>
+                        <option value="1">1 位</option>
+                        <option value="2">2 位</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="price-summary">請先選擇入住與退房日期</div>
+
+            <label class="form-label">預計抵達時間</label>
+            <input type="time" id="b-arrival" value="15:00">
+
+            <label class="form-label">特殊需求 (選填)</label>
+            <textarea id="b-note" rows="2" placeholder="加床、素食、行動不便協助等，歡迎告訴我們"></textarea>
+
+            <div class="nav-footer">
+                <button class="nav-btn" id="submit-btn" onclick="submitBooking()"
+                    style="text-decoration:underline; text-shadow:0.2px 0px 0px currentColor, -0.2px 0px 0px currentColor;">確認送出訂房</button>
+                <span class="prev-link" onclick="prevPage()">回上一頁修改</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- P5: 成功頁 -->
+    <section class="page page-success">
+        <div class="content-card">
+            <h3 style="color:#4A484A; font-size:2.2rem; margin-bottom:10px;">訂房已送出</h3>
+            <p id="success-msg" class="chinese-handwriting allow-select" style="font-size:1.1rem; margin-bottom:20px; font-family:'LXGW WenKai TC', sans-serif !important; text-align:left; max-width:520px; margin-left:auto; margin-right:auto;">
+                感謝您的預訂！請於<strong>2 日內完成匯款</strong>，並於匯款後主動私訊我們的 Instagram，<br>
+                告知匯款帳號末 5 碼，我們確認後即完成訂房程序。<br><br>
+                匯款帳戶：824 連線商業銀行（6880 總行）<br>
+                匯款帳號：111004563297
+            </p>
+            <div class="success-links">
+                <a href="https://www.instagram.com/sunyun686?igsh=MTYzdTl4M2Fxa2Jvbg==" target="_blank" class="social-link" style="font-weight:bold;">三蘊 IG</a>
+                <a href="https://www.instagram.com/deepcoffee241?igsh=NGE2MzZvcTIzNHM5" target="_blank" class="social-link" style="font-weight:bold;">Deep Coffee IG</a>
+                <button class="nav-btn" onclick="location.reload()" style="font-size:1.1rem !important; font-weight:normal !important; margin-top:20px;">回首頁再次訂房</button>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+/* ===================== 基本設定（請依實際狀況修改） ===================== */
+// 部署 Apps Script 後，把 /exec 網址貼在這裡
+const SANYUN_GAS_API = 'https://script.google.com/macros/s/AKfycbzTUabwNZejw37SgMvJylqftzJBIX5Ke0EnctrQ8jUlKd4ROfH1NO_4ovoi4Cjsmdc-Og/exec';
+
+// 房價設定：4 位大人以內皆為同一價格（不因人數增加而加價），孩童最多 2 位、不加價
+// 只有「跨年夜」或「農曆新年期間」等特殊日期，每晚房價才會提高
+const BASE_PRICE    = 3600;  // 一般日期，每晚（4 人以內同價）
+const HOLIDAY_PRICE = 5000;  // 特殊高峰日期，每晚
+
+// ===== 自動判斷「跨年夜」與「農曆新年」，不用每年手動改日期 =====
+
+// 跨年夜：每年 12/31 入住當晚，年年都是同一天，程式自動判斷，永遠不用更新
+function isNewYearsEve(dateStr) {
+    return dateStr.slice(5) === '12-31';
+}
+
+// 農曆新年「初一」對照表（西元年 -> 農曆正月初一日期）
+// 農曆日期每年都不同，沒有公式可以直接算，只能查表。
+// 這裡已經先列到 2038 年，之後如果要繼續使用，記得請人幫忙查「西元 XX年 農曆初一」補進來即可
+const CNY_DAY1 = {
+    2025: '2025-01-29',
+    2026: '2026-02-17',
+    2027: '2027-02-06',
+    2028: '2028-01-26',
+    2029: '2029-02-13',
+    2030: '2030-02-03',
+    2031: '2031-01-23',
+    2032: '2032-02-11',
+    2033: '2033-01-31',
+    2034: '2034-02-19',
+    2035: '2035-02-08',
+    2036: '2036-01-28',
+    2037: '2037-02-15',
+    2038: '2038-02-04'
+};
+// 農曆新年高峰期範圍：用「相對初一(CNY_DAY1)的位移天數」表示，不用自己算絕對日期
+//   from：從初一往前推幾天開始算（負數）。例如 -1 = 除夕、-2 = 小年夜
+//   to  ：算到初一之後第幾天（該晚也算進去）。例如 4 = 初五
+// 預設 { from:-1, to:4 } = 除夕算到初五，共 6 晚
+const LUNAR_NEW_YEAR_RANGE = { from: -1, to: 4 };
+
+// 如果某一年想要不同範圍，才需要在這裡加一筆覆寫（優先於上面的預設值），格式一樣是 { from, to }
+// 範例：2027 年想從小年夜（初一前兩天）開始算到初五：
+const LUNAR_NEW_YEAR_OVERRIDE = {
+    2027: { from: -2, to: 4 }, // 小年夜 2/4 ～ 初五 2/10，共 7 晚
+};
+
+// 統一用「本地時間」組出 YYYY-MM-DD 字串，不要用 toISOString()
+// （toISOString 會轉成 UTC，在台灣這種 UTC+8 的時區，日期可能會被往前推一天，
+//   這正是之前「選到跨年/過年，房價卻沒變成 5000」的原因）
+function toDateStr(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+}
+function addDays(dateStr, days) {
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + days);
+    return toDateStr(d);
+}
+function isLunarNewYearNight(dateStr) {
+    const year = parseInt(dateStr.slice(0, 4), 10);
+    const day1 = CNY_DAY1[year];
+    if (!day1) return false; // 對照表沒有這一年，就當一般日期計算
+
+    const range = LUNAR_NEW_YEAR_OVERRIDE[year] || LUNAR_NEW_YEAR_RANGE;
+    const start = addDays(day1, range.from);
+    const rangeEnd = addDays(day1, range.to + 1); // +1 是因為要把 to 那一晚也算進去（含）
+    return dateStr >= start && dateStr < rangeEnd;
+}
+function isHolidayNight(dateStr) {
+    return isNewYearsEve(dateStr) || isLunarNewYearNight(dateStr);
+}
+
+/* ===================== 頁面切換 ===================== */
+let currentPage = 0;
+const TOTAL_PAGES = 6;
+const slider = document.getElementById('slider');
+
+function updateSlider() {
+    slider.style.transform = `translateX(-${currentPage * (100 / TOTAL_PAGES)}%)`;
+    document.getElementById('progress').style.width = `${((currentPage + 1) / TOTAL_PAGES) * 100}%`;
+    if (currentPage === 3) showGuide('process');
+}
+function nextPage() {
+    if (currentPage === 4) { if (!validateForm()) return; }
+    if (currentPage < TOTAL_PAGES - 1) { currentPage++; updateSlider(); }
+}
+function prevPage() { if (currentPage > 0) { currentPage--; updateSlider(); } }
+
+// 滑動手勢：僅開放 P0~P2 自由滑動，須知頁需按按鈕才能前進，表單頁需驗證
+// 同時支援手機觸控（touch）與電腦滑鼠拖曳（mouse），避免電腦版滑不動
+let startX = 0;
+let isDragging = false;
+
+function isInteractiveTarget(el) {
+    return el.closest('input, select, textarea, button, a, .guide-body, #guide-content');
+}
+
+function handleSwipeEnd(endX) {
+    if (window.getSelection().toString().length > 0) return;
+    let diff = startX - endX;
+    const threshold = 80;
+    if (diff > threshold) { if (currentPage < 3) nextPage(); }
+    else if (diff < -threshold) { if (currentPage > 0 && currentPage <= 4) prevPage(); }
+}
+
+document.addEventListener('gesturestart', e => e.preventDefault(), { passive: false });
+
+// --- 手機觸控 ---
+window.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+}, { passive: true });
+window.addEventListener('touchend', e => {
+    handleSwipeEnd(e.changedTouches[0].clientX);
+}, { passive: true });
+
+// --- 電腦滑鼠拖曳 ---
+window.addEventListener('mousedown', e => {
+    if (isInteractiveTarget(e.target)) return; // 表單元件、按鈕、連結不觸發翻頁
+    isDragging = true;
+    startX = e.clientX;
+
+    const handleMouseUp = (me) => {
+        if (isDragging) handleSwipeEnd(me.clientX);
+        isDragging = false;
+        window.removeEventListener('mouseup', handleMouseUp);
+    };
+    window.addEventListener('mouseup', handleMouseUp);
+});
+
+/* ===================== 訂房須知內容 ===================== */
+const guideContent = {
+    process: `
+        1. 私訊詢問：請私訊 Instagram 詢問欲訂日期的空房狀態。<br>
+        2. 確認填單：確認日期後，填寫訂房表單。<br>
+        3. 完成匯款：請於<strong>「2 日內」</strong>完成匯款。<br>
+        4. 回傳確認：匯款後請立即私訊 Instagram，告知匯款帳號末 5 碼，收到回覆後即訂房成功。<br>
+    `,
+    stay: `
+        1. 入住方式：採自助式入住，匯款完成後於入住當日告知密碼取鑰匙。<br>
+        2. 進退房時間：15:00 後可入住，退房時間為隔日 12:00 前。<br>
+        3. 續住清潔：7 日以上長期租客提供每週清潔乙次；未滿 7 日之房客若需打掃則需另付清潔費用。<br>
+    `,
+    cancel: `
+        <strong>📌 個人因素取消退費：</strong><br>
+        1. 入住前 14 日通知取消，可退回已付金額 70%。<br>
+        2. 入住前 13 日通知取消，可退回已付金額 50%。<br>
+        3. 入住前 9 日內不接受取消，亦不退款。<br><br>
+        <strong>📌 改期辦法：</strong><br>
+        1. 最晚於入住前 10 日可提出更改日期，經協調確認後至多可更改一次。<br>
+        2. 經改期後之訂單，恕不接受取消與退款。<br><br>
+        <strong>📌 天災與不可抗因素：</strong><br>
+        1. 若預定當天因天災等不可抗力因素（依台東縣政府公告宣佈停班停課情況為準），可保留後續優先訂房資格，<span class="mobile-merge"><strong>期限為原訂房日期往後算三個月。</strong></span><span class="desktop-break"><br><span class="sub-line">期限為原訂房日期往後算三個月。</span></span><br>
+        2. 若超過三個月未再預約，則視同放棄資格，不再另行退費。
+    `,
+    reminder: `
+        1. 小屋距離海邊約 100m，散步即可抵達。<br>
+        2. 為維持住宿品質並尊重鄰居，23:00 後請勿大聲喧嘩，且空間謝絕訪客。<br>
+    `
+};
+function showGuide(type) {
+    document.getElementById('guide-content').innerHTML = guideContent[type];
+    document.querySelectorAll('.guide-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.guide === type);
+    });
+}
+
+/* ===================== 護照照片預覽 ===================== */
+let photoBase64 = "";
+let photoMime = "";
+document.getElementById('b-photo').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const result = e.target.result; // data:image/xxx;base64,....
+        photoMime = file.type;
+        photoBase64 = result.split(',')[1];
+        const preview = document.getElementById('photo-preview');
+        preview.src = result;
+        preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+});
+
+/* ===================== 價格計算 ===================== */
+function getNightsList(checkinStr, checkoutStr) {
+    const nights = [];
+    if (!checkinStr || !checkoutStr) return nights;
+    let d = new Date(checkinStr + 'T00:00:00');
+    const end = new Date(checkoutStr + 'T00:00:00');
+    while (d < end) {
+        nights.push(toDateStr(d));
+        d.setDate(d.getDate() + 1);
+    }
+    return nights;
+}
+function calcNights() {
+    return getNightsList(
+        document.getElementById('b-checkin').value,
+        document.getElementById('b-checkout').value
+    ).length;
+}
+function updatePriceSummary() {
+    const ci = document.getElementById('b-checkin').value;
+    const co = document.getElementById('b-checkout').value;
+    const adults = parseInt(document.getElementById('b-adults').value);
+    const children = parseInt(document.getElementById('b-children').value);
+    const summaryEl = document.getElementById('price-summary');
+
+    const nightsList = getNightsList(ci, co);
+    if (nightsList.length <= 0) {
+        summaryEl.innerHTML = "請先選擇正確的入住與退房日期";
+        return 0;
+    }
+
+    let total = 0;
+    let hasHoliday = false;
+    nightsList.forEach(n => {
+        if (isHolidayNight(n)) { total += HOLIDAY_PRICE; hasHoliday = true; }
+        else { total += BASE_PRICE; }
+    });
+
+    summaryEl.innerHTML = `
+        入住 ${nightsList.length} 晚 · ${adults} 位大人${children > 0 ? ' · ' + children + ' 位孩童' : ''}<br>
+        ${hasHoliday ? `房價為一般 $${BASE_PRICE}／跨年或農曆新年期間 $${HOLIDAY_PRICE}（每晚）` : `每晚房價：$${BASE_PRICE}`}
+        <hr>
+        總計：$${total}
+    `;
+    return total;
+}
+['b-checkin','b-checkout','b-adults','b-children'].forEach(id => {
+    document.getElementById(id).addEventListener('change', updatePriceSummary);
+});
+
+// 選擇入住日期後，退房日期的日曆自動限制只能選「入住日期之後」
+const checkinInput = document.getElementById('b-checkin');
+const checkoutInput = document.getElementById('b-checkout');
+checkinInput.addEventListener('change', () => {
+    if (!checkinInput.value) return;
+    const minCheckout = addDays(checkinInput.value, 1);
+    checkoutInput.min = minCheckout;
+    // 如果原本選的退房日期已經不符合（早於或等於新的入住日期），自動清空讓使用者重選
+    if (checkoutInput.value && checkoutInput.value <= checkinInput.value) {
+        checkoutInput.value = '';
+        updatePriceSummary();
+    }
+});
+
+/* ===================== 驗證與送出 ===================== */
+function validateForm() {
+    const name = document.getElementById('b-name').value.trim();
+    const phone = document.getElementById('b-phone').value.trim();
+    const checkin = document.getElementById('b-checkin').value;
+    const checkout = document.getElementById('b-checkout').value;
+
+    if (!name) { alert('請填寫姓名！'); return false; }
+    if (!phone || phone.length < 9) { alert('請輸入正確的聯絡電話！'); return false; }
+    if (!photoBase64) { alert('請上傳護照或身分證照片！'); return false; }
+    if (!checkin || !checkout) { alert('請選擇入住與退房日期！'); return false; }
+    if (calcNights() <= 0) { alert('退房日期須晚於入住日期！'); return false; }
+    return true;
+}
+
+async function submitBooking() {
+    if (!validateForm()) return;
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerText = "訂房傳送中...";
+
+    const total = updatePriceSummary();
+
+    const bookingData = {
+        name: document.getElementById('b-name').value.trim(),
+        phone: document.getElementById('b-phone').value.trim(),
+        checkin: document.getElementById('b-checkin').value,
+        checkout: document.getElementById('b-checkout').value,
+        adults: document.getElementById('b-adults').value,
+        children: document.getElementById('b-children').value,
+        arrivalTime: document.getElementById('b-arrival').value,
+        note: document.getElementById('b-note').value.trim(),
+        totalAmount: total,
+        photoBase64: photoBase64,
+        photoMime: photoMime
+    };
+
+    try {
+        const resp = await fetch(SANYUN_GAS_API, { method: 'POST', body: JSON.stringify(bookingData) });
+        const result = await resp.json();
+        if (result.status === "Success") {
+            document.getElementById('success-msg').innerHTML =
+                `感謝您的預訂！請於<strong>2 日內完成匯款</strong>，並於匯款後主動私訊我們的 Instagram，<br>
+                告知匯款帳號末 5 碼，我們確認後即完成訂房程序。<br><br>
+                匯款帳戶：824 連線商業銀行（6880 總行）<br>
+                匯款帳號：111004563297`;
+            currentPage = 5;
+            updateSlider();
+        } else {
+            alert('系統錯誤: ' + (result.message || '請稍後再試'));
+            btn.disabled = false;
+            btn.innerText = "確認送出訂房";
+        }
+    } catch (err) {
+        alert('提交失敗，請檢查網路連線');
+        btn.disabled = false;
+        btn.innerText = "確認送出訂房";
+    }
+}
+
+/* ===================== 初始化 ===================== */
+updateSlider();
+showGuide('process');
+</script>
+</body>
+</html>
