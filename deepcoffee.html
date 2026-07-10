@@ -166,7 +166,7 @@
             <div id="guide-content-desktop" class="guide-body" style="color:#353569; font-size:0.9rem; text-align:left; width:fit-content; max-width:95%; margin:0 auto; line-height:1.8;">
                 1. 我們僅接受轉帳方式付款，<strong>請於訂購時完成轉帳</strong>。<br>
                 2. 當日商品請於選定時段內至特定地點取貨。<br>
-                &emsp;取貨地址：<strong>台東縣台東市錦州街51號</strong><br>
+                &emsp;取貨地址：<strong>台東縣台東市中正路6號</strong><br>
                 &emsp;時段有以下選擇：<strong>13:00 - 14:00 / 14:00 - 15:00</strong><br>
                 3. 訂單成立付款後，僅能更換等值商品，無法退款。
             </div>
@@ -181,7 +181,7 @@
             <div id="guide-content-mobile" class="guide-body" style="color:#353569; font-size:0.9rem; text-align:left; width:fit-content; max-width:90%; margin:0 auto; line-height:1.8;">
                 1. 我們僅接受轉帳方式付款，<strong>請於訂購時完成轉帳</strong>。<br>
                 2. 當日商品請於選定時段內至特定地點取貨。<br>
-                • 取貨地址：<strong>台東縣台東市錦州街51號</strong><br>
+                • 取貨地址：<strong>台東縣台東市中正路6號</strong><br>
                 • 時段有以下選擇：<strong>13:00 - 14:00 / 14:00 - 15:00</strong><br>
                 3. 訂單成立付款後，僅能更換等值商品，無法退款。
             </div>
@@ -392,7 +392,7 @@ function showGuide(type) {
   const dailyHtmlDesktop = `
     1. 我們僅接受轉帳方式付款，<strong>請於訂購時完成轉帳</strong>。<br>
     2. 當日商品請於選定時段內至特定地點取貨。<br>
-    &emsp; 取貨地址：<strong>台東縣台東市錦州街51號</strong><br>
+    &emsp; 取貨地址：<strong>台東縣台東市中正路6號</strong><br>
     &emsp; 時段有以下選擇：<strong>13:00 - 14:00 / 14:00 - 15:00</strong><br>
     3. 訂單成立付款後，僅能更換等值商品，無法退款。
   `;
@@ -401,7 +401,7 @@ function showGuide(type) {
     2. 製作商品約需 3-5 個工作天，請告知預計取貨時間，我們確認是否能開單。<br>
     3. 響應環保愛地球，將不提供一次性餐具。<br>
     4. 可選擇<strong>面交自取</strong>或<strong>宅配寄送</strong>。<br>
-    &emsp;&emsp;• 若選擇<strong>面交取貨</strong>：<strong>台東縣台東市錦州街51號</strong><br>
+    &emsp;&emsp;• 若選擇<strong>面交取貨</strong>：<strong>台東縣台東市中正路6號</strong><br>
     &emsp;&emsp;確認取貨時間後，如需更改時間請務必事先電話告知。<br>
     &emsp;&emsp;• 若選擇<strong>宅配</strong>：<br>
     &emsp;&emsp;黑貓低溫宅配 $180~250 以件數尺寸計費，出貨日隔日送達 (離島另計)。<br>
@@ -417,7 +417,7 @@ function showGuide(type) {
   const dailyHtmlMobile = `
     1. 我們僅接受轉帳方式付款，<strong>請於訂購時完成轉帳</strong>。<br>
     2. 當日商品請於選定時段內至特定地點取貨。<br>
-    • 取貨地址：<strong>台東縣台東市錦州街51號</strong><br>
+    • 取貨地址：<strong>台東縣台東市中正路6號</strong><br>
     • 時段有以下選擇：<strong>13:00 - 14:00 / 14:00 - 15:00</strong><br>
     3. 訂單成立付款後，僅能更換等值商品，無法退款。`;
   const preorderHtmlMobile = `
@@ -425,7 +425,7 @@ function showGuide(type) {
     2. 製作商品約需 3-5 個工作天，請告知預計取貨時間，我們確認是否能開單。<br>
     3. 響應環保愛地球，將不提供一次性餐具。<br>
     4. 可選擇<strong>面交自取</strong>或<strong>宅配寄送</strong>。<br>
-    • 若選擇<strong>面交取貨</strong>：<strong>台東縣台東市錦州街51號</strong><br>
+    • 若選擇<strong>面交取貨</strong>：<strong>台東縣台東市中正路6號</strong><br>
     確認取貨時間後，如需更改時間請務必事先電話告知。<br>
     • 若選擇<strong>宅配</strong>：<br>
     黑貓低溫宅配 $180~250 以件數尺寸計費，<br>
@@ -615,7 +615,7 @@ async function submitOrder() {
     const hasPreorder = cart.some(item => item.category === '預約甜點');
     const time = document.getElementById('pickup-time').value;
     const date = document.getElementById('delivery-date').value;
-    const address = "台東縣台東市錦州街51號";
+    const address = "台東縣台東市中正路6號";
     let msgDesktop = "感謝您的訂購，請等候通知。";
     let msgMobile = "感謝您的訂購，請等候通知。";
     if (isDailyOrder) {
