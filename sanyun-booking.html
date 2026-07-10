@@ -289,6 +289,9 @@ input[type=file] { border-bottom: none !important; padding: 8px 0 !important; }
                     <input type="file" id="b-photo" accept="image/*">
                     <img id="photo-preview">
                 </div>
+                
+                <label class="form-label">Instagram 帳號</label>
+                <input type="text" id="b-ig" placeholder="請輸入您的 IG 帳號名稱">
 
                 <div class="form-column">
                     <label class="form-label">入住日期</label>
@@ -651,6 +654,7 @@ async function submitBooking() {
     const bookingData = {
         name: document.getElementById('b-name').value.trim(),
         phone: document.getElementById('b-phone').value.trim(),
+        ig: document.getElementById('b-ig').value.trim(),
         checkin: document.getElementById('b-checkin').value,
         checkout: document.getElementById('b-checkout').value,
         adults: document.getElementById('b-adults').value,
