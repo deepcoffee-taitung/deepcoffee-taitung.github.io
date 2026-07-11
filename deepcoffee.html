@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>deepcoffee 番外-十厚</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Dancing+Script&family=Noto+Sans+TC:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Chenyu-otf/chenyuluoyan_thin@main/ChenYuluoyan-2.0-Thin.ttf">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-web@latest/style.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
+        @font-face {
+            font-family: 'ChenYuLuoYan';
+            src: url('https://cdn.jsdelivr.net/gh/Chenyu-otf/chenyuluoyan_thin@main/ChenYuluoyan-2.0-Thin.ttf') format('truetype');
+            font-display: swap;
+        }
+        html { font-size: 20px; }
+        :root { --primary: #dfdfdf; --accent: #353569; }
+        *, body, html, input, button, select, textarea {
+            font-family: 'Caveat', 'ChenYuLuoYan', "Microsoft JhengHei", sans-serif !important;
+            -webkit-font-smoothing: antialiased;line-height: 1.6;
+        }
+        body {
+            margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden;
+            background-color: #6f9ee0;
+            background-image: url('背景.PNG');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            user-select: none; -webkit-user-select: none; color: var(--accent);
+        }
+        /* ---- Image-text helpers ----
+           Static text labels/titles are now delivered as image files.
+           Each is wrapped as: <img class="img-text" ...> + <span class="img-fallback"> (hidden)
+           If the image fails to load (not uploaded yet), the original text fallback shows instead
+           so the page never breaks. Once the real image file exists at the given path, it will
+           simply display automatically. */
+        .img-text { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+        .img-fallback { display: none; }
+        .img-btn { background: none !important; border: none !important; padding: 0 !important; cursor: pointer; box-shadow: none !important; }
+        .img-btn .img-text { display: inline-block; }
+        .img-btn .img-fallback.active-fallback { display: inline; }
+        .cat-btn.active .img-text, .guide-btn.active .img-text { opacity: 1; }
+        .cat-btn .img-text, .guide-btn .img-text { opacity: 0.45; transition: opacity 0.3s; }
+        h1 { font-size: 2.2rem; }
+        h3 { font-size: 1.8rem; }
+        .brand-font {
+            font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif !important;
+            font-weight: 300 !important; font-size: 0.8em;
+        }
+        .handwriting-elegant { font-family: 'Dancing Script', cursive !important; font-size: 1.8rem; }
+        .handwriting-natural { font-family: 'Caveat', cursive !important; font-size: 1.6rem; letter-spacing: 1px; }
+        .chinese-handwriting { width: 100%; max-width: 90%; margin: 0 auto; }
+        .slider-container { display: flex; width: 600%; height: 100vh; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important; touch-action: pan-y; margin: 0; padding: 0; overflow: hidden; }
+        .page { width: 100vw !important; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start !important; padding: 0; margin: 0; box-sizing: border-box; flex-shrink: 0; overflow-x: hidden; overflow-y: auto !important; -webkit-overflow-scrolling: touch; position: relative; }
+        .content-card { background: none; box-shadow: none; padding: 0; width: 90%; max-width: 800px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-wrap: break-word; word-wrap: break-word; }
+        .page:not(.page-p1)::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;transform: translateY(-20px); }
+        .page-p1 .content-card { margin: auto 0 !important; display: flex; flex-direction: column; align-items: center; justify-content: center; height: auto; }
+        .page-p1 .nav-footer { margin-top: 0; position: absolute; bottom: 50px; }
+        .mobile-only-content { display: none !important; }
+        .desktop-only-content { display: flex !important; flex-direction: column; }
+        .page-guide { display: flex !important; flex-direction: column !important; height: 100vh !important; justify-content: flex-start !important; padding-top: 5vh !important; overflow: hidden !important; }
+        .page-guide .content-card { height: auto !important; flex: 1 1 auto; min-height: 0; overflow: visible !important; align-items: center; }
+        .guide-body { font-family: 'LXGW WenKai TC', 'Microsoft JhengHei', sans-serif !important; flex: 1 1 auto; min-height: 0; overflow-y: auto !important; -webkit-overflow-scrolling: touch; width: 100%; text-align: left; padding: 10px 0; margin: 0 !important; }
+        .guide-body strong { font-family: 'LXGW WenKai TC', sans-serif !important; font-weight: 600 !important; color: #30305f !important; letter-spacing: 0px !important; }
+        .page-guide .guide-footer{ flex: 0 0 auto; width: 100%; display: flex; justify-content: center; align-items: center; text-align: center; padding: 10px 0 100px !important; margin-top: auto; }
+        .guide-btn.active { color: #353569 !important; font-weight: bold !important; text-shadow: 0.2px 0px 0px currentColor, -0.2px 0px 0px currentColor; }
+        #guide-content { display: block; overflow: hidden; transition: opacity 0.2s ease-in-out; }
+        .page-guide .guide-title, .page-guide .guide-tabs { flex: 0 0 auto; }
+        .page-menu { justify-content: flex-start !important; padding-top: 6vh; }
+        .page-menu .content-card { display: flex; flex-direction: column; justify-content: flex-start; height: 100%; overflow: hidden; }
+        .page-menu h3 { margin-top: 40px !important; margin-bottom: 20px !important; line-height: 1.2; }
+        .page-menu .content-card > div:nth-child(2) { margin-bottom: 0px !important; }
+        #category-desc { margin-top: 0px !important; margin-bottom: 15px !important; line-height: 1; opacity: 0.8; }
+        #product-list { width: 100%; margin-top: 5px; overflow-y: auto; max-height: 55vh; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
+        #product-list::-webkit-scrollbar { width: 4px; }
+        #product-list::-webkit-scrollbar-thumb { background: rgba(199, 181, 163, 0.4); border-radius: 10px; }
+        .product { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(255, 255, 255, 0.9); margin-bottom: 6px; border-radius: 8px; width: 100% !important; box-sizing: border-box; overflow: hidden; }
+        .product-img { width: 100px; height: 100px; flex-shrink: 0; object-fit: cover; border-radius: 6px; margin-right: 0px; }
+        .product-info { text-align: left; min-width: 0; flex: 1; display: flex; flex-direction: column; justify-content: center; padding-right: 10px; }
+        .product-price-section { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 0px; }
+        .product-price-section span, .product-price-section div { line-height: 1.1 !important; margin: 0 !important; }
+        .product-info h4 { overflow-wrap: break-word; word-wrap: break-word; font-size: 1.3rem; }
+        .qty-btn { background: none !important; border: none !important; color: var(--accent) !important; font-size: 1.5rem !important; padding: 0 10px !important; cursor: pointer; box-shadow: none !important; text-shadow: none !important; }
+        .nav-btn { background: none !important; border: none !important; color: var(--accent) !important; font-size: 1.5rem !important; padding: 10px 0 !important; letter-spacing: 2px; cursor: pointer; box-shadow: none !important; font-weight: 900 !important; }
+        .nav-footer { position: static; margin-top: auto; margin-bottom: 60px; width: 90%; max-width: 650px; display: flex; flex-direction: column; align-items: center; gap: 10px; box-sizing: border-box; }
+        .nav-footer .nav-btn { width: auto !important; margin: 0 auto; }
+        .temp-selector { display: flex; gap: 8px; margin-top: 8px; }
+        .temp-btn { background: none; border: 1px solid #ddd; border-radius: 4px; padding: 2px 12px; font-size: 0.9rem; cursor: pointer; color: #dfdfdf; transition: all 0.3s; }
+        .temp-btn.active { background-color: var(--accent); color: white; border-color: var(--accent); font-weight: bold; }
+        .stock-text { font-size: 1.1rem !important; margin-bottom: -2px !important; }
+        .price-text { font-size: 1.3rem; font-weight: bold; }
+        .progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent); transition: width 0.3s; z-index: 1000; }
+        .home-link {
+            position: fixed; top: 14px; left: 18px; z-index: 1001;
+            font-size: 0.85rem; color: var(--accent); opacity: 0.5;
+            text-decoration: none; letter-spacing: 1px;
+        }
+        .cat-btn { background: none !important; border: none !important; padding: 5px 10px !important; cursor: pointer; font-size: 1.6rem !important; color: #dfdfdf !important; transition: color 0.3s; box-shadow: none !important; }
+        .cat-btn.active { color: #353569 !important; font-weight: bold; text-shadow: 0.2px 0px 0px currentColor, -0.2px 0px 0px currentColor; }
+        .page-guide .guide-tabs .guide-btn { color: #dfdfdf !important; font-weight: bold !important; }
+        .page-guide .guide-tabs .guide-btn.active { color: #353569 !important; font-weight: bold !important; }
+        .page-notice .content-card { margin: auto 0 !important; display: flex; flex-direction: column; align-items: center; justify-content: center; height: auto; }
+        .page-notice .nav-footer { margin-top: 0; position: absolute; bottom: 50px; }
+        .page-checkout { justify-content: flex-start !important; padding-top: 3vh; }
+        .allow-select, .allow-select strong, strong { user-select: text !important; -webkit-user-select: text !important; cursor: text; }
+        .page-checkout .content-card { justify-content: flex-start !important; padding-top: 0px; min-height: min-content; }
+        .checkout-flex-container { display: flex; gap: 30px; flex-wrap: wrap; width: 100%; }
+        .checkout-column { flex: 1; min-width: 300px; max-width: 100%; text-align: left; }
+        #cart-summary { width: 100%; max-width: 600px; margin-top: 0 !important; margin-bottom: 15px; background: #f5f5f5; padding: 15px !important; border-radius: 8px; font-size: 1rem; color: #353569; box-sizing: border-box; text-align: center; }
+        #cart-summary br { content: ""; margin: 2px 0; display: block; }
+        #cart-summary hr { border: 0; border-top: 1px solid #ddd; margin: 10px 0; }
+        input, select, textarea { width: 100%; border: none !important; border-bottom: 1px solid #ddd !important; border-radius: 0 !important; background-color: transparent !important; padding: 5px 0px !important; margin-top: 0px; font-size: 1.1rem !important; color: #1b1b3a; outline: none; box-sizing: border-box; }
+        input:focus, select:focus, textarea:focus { border-bottom: 1.5px solid var(--accent) !important; }
+        input::placeholder, textarea::placeholder { color: #d8d8ec; opacity: 1; }
+        input, select, textarea { width: 100% !important; box-sizing: border-box; margin-left: 0 !important; margin-right: 0 !important; }
+        select { cursor: pointer; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 10px; padding-right: 25px; -webkit-appearance: none; appearance: none; background: none !important; }
+        #submit-btn { width: 100%; height: 38px; margin-top: 20px; background-color: var(--accent); color: white; border: none; border-radius: 6px; font-size: 1.0rem; cursor: pointer; display: block; }
+        .prev-link-right { display: block; text-align: right; margin-top: 10px; font-size: 0.8rem; color: #353569; text-decoration: underline; cursor: pointer; }
+        .form-label { font-weight: bold; display: block; text-align: left; font-size: 1.2rem; margin-top: 10px; color: #353569; }
+        .page-success .content-card { margin: auto 0 !important; padding: 20px; }
+        .success-footer-links { width: 100%; max-width: 800px; border-top: none !important; padding-top: 25px; }
+        .social-link { display: block; text-decoration: none; color: var(--accent); font-size: 1.4rem; padding: 8px 0; margin-bottom: 5px; border-bottom: 1px solid rgba(53, 53, 105, 0.05); transition: opacity 0.3s; }
+        .social-link:hover { opacity: 0.6; }
+        @media (max-width: 600px) {
+            html { font-size: 16px; }
+            .content-card { width: 100% !important; margin: 0 auto !important; padding: 10px 20px !important; box-sizing: border-box !important; align-items: center !important; }
+            h1 { font-size: 1.8rem; }
+            h3 { font-size: 1.6rem; }
+            .desktop-only-content { display: none !important; }
+            .mobile-only-content { display: flex !important; flex-direction: column !important; width: 100% !important; align-items: center !important; box-sizing: border-box !important; }
+            .page-guide { display: flex !important; flex-direction: column !important; height: 100vh !important; justify-content: flex-start !important; padding-top: 8vh !important; overflow: hidden !important; }
+            .page-guide .guide-tabs .guide-btn-mobile { font-size: 1.7rem !important; letter-spacing: 1px !important; }
+            .guide-body { font-family: 'LXGW WenKai TC', 'Microsoft JhengHei', sans-serif !important; font-size: 0.8rem !important; }
+            .guide-body strong { font-family: 'LXGW WenKai TC', sans-serif !important; font-weight: 600 !important; color: #30305f !important; letter-spacing: 0px !important; }
+            .page-guide .guide-footer { padding: 0px 0 50px !important; }
+            .page:nth-of-type(3) h3 { font-size: 2.0rem !important; margin-top: 20px !important; margin-bottom: 20px !important; }
+            .page:nth-of-type(3) .chinese-handwriting { font-size: 1.3rem !important; line-height: 1.8 !important; }
+            .page:nth-of-type(4) { padding-top: 12vh !important; }
+            .page:nth-of-type(4) .nav-footer { margin-top: 30px !important; margin-bottom: 40px !important; }
+            .page:nth-of-type(4) .prev-link { font-size: 1.3rem !important; text-shadow: 0.15px 0px 0px currentColor, -0.15px 0px 0px currentColor; }
+            .page:nth-of-type(4) h3 { font-size: 2.0rem !important; margin-top: 30px; margin-bottom: 20px !important; }
+            .page:nth-of-type(5) .prev-link { font-size: 1.3rem !important; margin-top: 5px !important; text-shadow: 0.15px 0px 0px currentColor, -0.15px 0px 0px currentColor; }
+            .cat-btn { font-size: 1.4rem !important; padding: 4px 4px !important; letter-spacing: 0px !important; }
+            .checkout-column { min-width: 100%; }
+            .form-label { font-size: 1.6rem !important; margin-bottom: 5px !important; }
+            input, select, textarea { font-size: 1.4rem !important; font-weight: bold !important; padding: 12px 0 !important; }
+            #cart-summary { font-size: 1.25rem !important; padding: 10px !important; }
+            .page-p1 .nav-footer { bottom: 25px !important; }
+            .page-p1 .nav-footer .handwriting-natural { font-family: 'LXGW WenKai TC', sans-serif !important; font-weight: 500 !important; font-size: 0.9rem !important; text-shadow: 0.1px 0px 0px currentColor; letter-spacing: 3px; opacity: 0.5 !important; }
+            .nav-footer { margin-bottom: 20px !important; padding-left: 10px; padding-right: 10px; padding-bottom: 0px !important; }
+            #product-list { width: 100% !important; padding-left: 0; padding-right: 0; }
+            .page-notice .nav-footer { bottom: 25px !important; }
+            .page-success { height: 100vh !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; padding-top: 0px !important; padding-bottom: 0px !important; }
+            .page-success h3 { font-size: 2rem !important; margin-top: 0 !important; }
+            .page-success .mobile-only-content { background: transparent !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; width: 100% !important; padding: 0 20px !important; box-sizing: border-box !important; margin: 0 !important; }
+            .page-success .desktop-only-content { display: none !important; }
+            .social-link { font-family: 'Caveat', sans-serif !important; font-size: 1.3rem !important; font-weight: bold; margin-bottom: 8px; }
+        }
+        a[href^="tel"], a[href^="sms"] { color: inherit !important; text-decoration: none !important; font-family: inherit !important; font-weight: inherit !important; }
+        .allow-select { -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body>
+<a class="home-link" href="index.html">
+    <img class="img-text" src="images/home-link.png" alt="‹ 回首頁" style="height: 18px; display: inline-block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+    <span class="img-fallback">‹ 回首頁</span>
+</a>
+<div class="progress-bar" id="progress"></div>
+<div class="slider-container" id="slider">
+    <section class="page page-p1">
+        <div class="content-card">
+            <img class="img-text" src="番外篇.PNG" alt="番外篇 — 收起10年店面營業後，偶爾還是會想滿足那種玩弄滋味的樂趣。挑選各式在地有趣的食材，不定期限時限量開單。少了一點面對面的熟絡，但是記憶中溫暖的滋味 仍然那樣" style="width: 90%; max-width: 500px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" draggable="false">
+            <p class="img-fallback chinese-handwriting" style="color: #636396; font-size: 1.4rem; width: fit-content; max-width: 90%; margin: 0 auto;">
+                <span style="display:block; font-size:1.6em; color:#353569; margin-bottom: 20px;">番外篇</span>
+                收起10年店面營業後 偶爾還是會想滿足那種玩弄滋味的樂趣<br>
+                挑選各式在地有趣的食材 不定期限時限量開單<br><br>
+                少了一點面對面的熟絡 但是記憶中溫暖的滋味 仍然那樣
+            </p>
+        </div>
+        <div class="nav-footer">
+            <img class="img-text" src="向左滑動.png" alt="〈 向左滑動 〉" style="max-width: 200px; opacity: 0.8; cursor: pointer;" onclick="nextPage()" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="img-fallback handwriting-natural" style="opacity: 0.5; font-size: 0.85rem; font-weight: bold; letter-spacing: 2px; cursor: pointer;" onclick="nextPage()">〈 向左滑動 〉</div>
+        </div>
+    </section>
+    <section class="page page-guide">
+        <div class="content-card desktop-only-content">
+            <h3 class="guide-title" style="margin:0 0 0px 0;">
+                <img class="img-text" src="購買須知.png" alt="購買須知" style="height: 8.4rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="img-fallback" style="color:#353569; font-size:2.8rem;">購買須知</span>
+            </h3>
+            <div style="text-align: center; margin-top: -50px;">
+                <img class="img-text" src="images/guide-note.png" alt="若同時訂購當日商品與預訂商品，請分開下單～" style="height: 1.2rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="img-fallback" style="font-size: 1.2rem; color: #dfdfdf; font-weight: bold;">若同時訂購當日商品與預訂商品，請分開下單～</span>
+            </div>
+            <div class="guide-tabs" style="display:flex; justify-content:center; gap:40px; margin-bottom:40px; height:10px;">
+                <button class="nav-btn guide-btn guide-btn-desktop img-btn" data-guide="daily" onclick="showGuide('daily')">
+                    <img class="img-text" src="images/tab-daily.png" alt="當日商品" style="height: 1.5rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="img-fallback">當日商品</span>
+                </button>
+                <button class="nav-btn guide-btn guide-btn-desktop img-btn" data-guide="preorder" onclick="showGuide('preorder')">
+                    <img class="img-text" src="images/tab-preorder.png" alt="預訂商品" style="height: 1.5rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="img-fallback">預訂商品</span>
+                </button>
+            </div>
+            <div id="guide-content-desktop" class="guide-body" style="color:#353569; font-size:0.9rem; text-align:left; width:fit-content; max-width:95%; margin:0 auto; line-height:1.8;">
+                1. 我們僅接受轉帳方式付款，<strong>請於訂購時完成轉帳</strong>。<br>
+                2. 當日商品請於選定時段內至特定地點取貨。<br>
+                &emsp;取貨地址：<strong>台東縣台東市中正路6號</strong><br>
+                &emsp;時段有以下選擇：<strong>13:00 - 14:00 / 14:00 - 15:00</strong><br>
+                3. 訂單成立付款後，僅能更換等值商品，無法退款。
+            </div>
+        </div>
+        <div class="content-card mobile-only-content">
+            <h3 class="guide-title" style="margin:0 0 0px 0;">
+                <img class="img-text" src="購買須知.png" alt="購買須知" style="height: 2.2rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="img-fallback" style="color:#353569; font-size:2.2rem;">購買須知</span>
+            </h3>
+            <div style="text-align: center;">
+                <img class="img-text" src="images/guide-note.png" alt="若同時訂購當日商品與預訂商品，請分開下單～" style="height: 1.3rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="img-fallback" style="font-size: 1.3rem; color: #dfdfdf; font-weight: bold;">若同時訂購當日商品與預訂商品，請分開下單～</span>
+            </div>
+            <div class="guide-tabs" style="display:flex; justify-content:center; gap:50px; margin-bottom:40px; height:10px;">
+                <button class="nav-btn guide-btn guide-btn-mobile img-btn" data-guide="daily" onclick="showGuide('daily')">
+                    <img class="img-text" src="images/tab-daily.png" alt="當日商品" style="height: 1.7rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="img-fallback">當日商品</span>
+                </button>
+                <button class="nav-btn guide-btn guide-btn-mobile img-btn" data-guide="preorder" onclick="showGuide('preorder')">
+                    <img class="img-text" src="images/tab-preorder.png" alt="預訂商品" style="height: 1.7rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="img-fallback">預訂商品</span>
+                </button>
+            </div>
+            <div id="guide-content-mobile" class="guide-body" style="color:#353569; font-size:0.9rem; text-align:left; width:fit-content; max-width:90%; margin:0 auto; line-height:1.8;">
+                1. 我們僅接受轉帳方式付款，<strong>請於訂購時完成轉帳</strong>。<br>
+                2. 當日商品請於選定時段內至特定地點取貨。<br>
+                • 取貨地址：<strong>台東縣台東市中正路6號</strong><br>
+                • 時段有以下選擇：<strong>13:00 - 14:00 / 14:00 - 15:00</strong><br>
+                3. 訂單成立付款後，僅能更換等值商品，無法退款。
+            </div>
+        </div>
+        <div class="guide-footer">
+            <button class="img-btn" onclick="nextPage()">
+                <img class="img-text" src="已詳細閱讀.png" alt="我已詳細閱讀並同意，點擊前往選購" style="height: 4rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="img-fallback chinese-handwriting" style="color: #353569; font-size: 1.3rem; letter-spacing: 2px; font-weight: 900; text-decoration: underline;">我已詳細閱讀並同意，點擊前往選購</span>
+            </button>
+        </div>
+    </section>
+    <section class="page page-menu">
+        <div class="content-card">
+            <h3 class="handwriting-elegant" style="margin-top:0;">
+                <img class="img-text" src="menu.png" alt="Menu" style="height: 8.4rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="img-fallback" style="color: #353569; font-size: 3.2rem;">Menu</span>
+            </h3>
+            <div style="display: flex; justify-content: center; gap: 5px; margin-top: -50px; margin-bottom: 15px;">
+                <button class="nav-btn cat-btn img-btn" data-cat="當日義式" style="padding: 5px 12px;" onclick="renderProductsByCat('當日義式')">
+                    <img class="img-text" src="images/cat-espresso.png" alt="當日義式" style="height: 1.6rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="img-fallback">當日義式</span>
+                </button>
+                <button class="nav-btn cat-btn img-btn" data-cat="當日茶飲" style="padding: 5px 12px;" onclick="renderProductsByCat('當日茶飲')">
+                    <img class="img-text" src="images/cat-tea.png" alt="當日茶飲" style="height: 1.6rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="img-fallback">當日茶飲</span>
+                </button>
+                <button class="nav-btn cat-btn img-btn" data-cat="當日甜點" style="padding: 5px 12px;" onclick="renderProductsByCat('當日甜點')">
+                    <img class="img-text" src="images/cat-dessert.png" alt="當日甜點" style="height: 1.6rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="img-fallback">當日甜點</span>
+                </button>
+                <button class="nav-btn cat-btn img-btn" data-cat="預約甜點" style="padding: 5px 12px;" onclick="renderProductsByCat('預約甜點')">
+                    <img class="img-text" src="images/cat-preorder.png" alt="預訂商品" style="height: 1.6rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="img-fallback">預訂商品</span>
+                </button>
+            </div>
+            <div id="category-desc" style="font-size: 1.3rem; color: #dfdfdf; margin-bottom: 15px; text-align: center; font-weight: bold;">在特定時段來店取貨</div>
+            <div id="product-list">載入中...</div>
+            <div class="nav-footer">
+                <div style="margin-top:15px; text-align:right; font-weight:bold; font-size:1.4rem; color: #353569;">購物車(<span id="count">0</span>) 總計: $<span id="total">0</span></div>
+                <button class="img-btn" onclick="showCheckout()">
+                    <img class="img-text" src="前往結賬.png" alt="前往結帳" style="height: 2.4rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="img-fallback" style="color: var(--accent); font-size: 1.5rem; text-decoration: underline;">前往結帳</span>
+                </button>
+            </div>
+        </div>
+    </section>
+    <section class="page page-notice">
+        <div class="content-card">
+            <img class="img-text" src="注意事項.PNG" alt="注意事項 — 1. 如購買當日商品，請務必記得在所選時段內取貨。2. 如購買預定商品，請務必在填寫資訊後，主動私訊我們！3. 如有特殊需求，歡迎於結帳頁面告知，並主動私訊 deep coffee IG。謝謝您，產品皆為手工製作不加任何防腐劑，請盡早享用！" style="width: 90%; max-width: 500px; onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="img-fallback" style="text-align: left; width: fit-content; max-width: 90%; margin: 0 auto;">
+                <h3 style="color:#353569; font-size: 2rem; margin-bottom: 15px; text-align: center;">⚠️ 注意事項</h3>
+                <p class="chinese-handwriting" style="font-size: 1.2rem; line-height: 1.8;">
+                    1. 如購買<strong>當日商品</strong>，請務必記得在所選時段內取貨。<br>
+                    2. 如購買<strong>預定商品</strong>，請務必在填寫資訊後，主動私訊我們！<br>
+                    3. 如有特殊需求，歡迎於結帳頁面告知，並<strong>主動私訊 deep coffee IG</strong>。
+                </p>
+                <p class="chinese-handwriting" style="font-size: 1.2rem; margin-top: 20px; text-align: center;">謝謝您 <br>產品皆為手工製作 不加任何防腐劑 請盡早享用！</p>
+            </div>
+        </div>
+        <div class="nav-footer" style="margin-top: 15px; margin-bottom: 20px; gap: 2px;">
+            <button class="img-btn" onclick="nextPage()">
+                <img class="img-text" src="我已了解.png" alt="我已了解" style="height:1.8rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="img-fallback" style="color: var(--accent); font-size: 1.5rem; text-decoration: underline;">我已了解</span>
+            </button>
+            <span class="prev-link img-btn" style="font-size: 1rem; display: inline-block;" onclick="prevPage()">
+                <img class="img-text" src="修改購物車.png" alt="返回修改購物車" style="height: 1.8rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="img-fallback" style="color: #353569; text-decoration: underline;">返回修改購物車</span>
+            </span>
+        </div>
+    </section>
+    <section class="page page-checkout">
+        <div class="content-card" style="max-width: 650px;">
+            <h3 style="margin-bottom: 10px;">
+                <img class="img-text" src="結帳資訊.png" alt="結帳資訊" style="height: 8.4rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="img-fallback" style="font-size: 2rem; color: #353569;">結帳資訊</span>
+            </h3>
+            <!-- Bank transfer info intentionally kept as selectable text (not an image) so customers can copy the account number. -->
+            <div id="bank-info-section" class="allow-select" style="font-weight: bold; font-size: 1.2rem; margin-top: -50px; margin-bottom: 15px; color: #3e2723; text-align:left; line-height: 1.8;">
+                匯款帳戶：824 連線商業銀行 （6880 總行）<br>匯款帳號：111004563297
+            </div>
+            <div id="cart-summary" style="font-size:1.4rem; font-weight:bold; background:#f5f5f5; padding:10px; border-radius:8px; margin-bottom:15px;"></div>
+            <div class="checkout-flex-container">
+                <div class="checkout-column">
+                    <label class="form-label"><img class="img-text" src="images/label-name.png" alt="顧客姓名 / IG ID" style="height: 1.2rem; width: auto; display: inline-block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span class="img-fallback">顧客姓名 / IG ID</span></label>
+                    <input type="text" id="user-name" placeholder="請輸入姓名或 IG ID">
+                    <label class="form-label"><img class="img-text" src="images/label-phone.png" alt="手機號碼" style="height: 1.2rem; width: auto; display: inline-block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span class="img-fallback">手機號碼</span></label>
+                    <input type="tel" id="user-phone" placeholder="輸入手機號碼">
+                    <div id="account-tail-section">
+                        <label class="form-label"><img class="img-text" src="images/label-tail.png" alt="帳號後五碼" style="height: 1.2rem; width: auto; display: inline-block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span class="img-fallback">帳號後五碼</span></label>
+                        <input type="tel" id="account-tail" placeholder="請輸入 5 位數字" maxlength="5">
+                    </div>
+                </div>
+                <div class="checkout-column">
+                    <div id="preorder-method-section" style="display: none;">
+                        <label class="form-label"><img class="img-text" src="images/label-method.png" alt="領取方式" style="height: 1.2rem; width: auto; display: inline-block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span class="img-fallback">領取方式</span></label>
+                        <!-- Native <select> options can't render images; option text stays as plain text. -->
+                        <select id="preorder-type" onchange="togglePreorderFields()">
+                            <option value="宅配">宅配</option>
+                            <option value="面交">面交取貨</option>
+                        </select>
+                    </div>
+                    <div id="pickup-slot-section" style="display: none;">
+                        <label class="form-label"><img class="img-text" src="images/label-pickuptime.png" alt="自取時段" style="height: 1.2rem; width: auto; display: inline-block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span class="img-fallback">自取時段</span></label>
+                        <select id="pickup-time">
+                            <option value="下午1:00 - 2:00">13:00 - 14:00</option>
+                            <option value="下午2:00 - 3:00">14:00 - 15:00</option>
+                        </select>
+                    </div>
+                    <div id="delivery-info-section" style="display: none; margin-top: 15px;">
+                        <!-- date-label text toggles between 預計取貨日期 / 預計到貨日期 via JS, kept as text -->
+                        <label id="date-label" class="form-label">預計取貨日期</label>
+                        <input type="date" id="delivery-date" style="margin-bottom: 8px;">
+                        <input type="text" id="delivery-address" placeholder="請輸入完整收件地址">
+                    </div>
+                    <input type="hidden" id="pickup-method">
+                    <div id="special-note-container" style="margin-top: 10px;">
+                        <label class="form-label" style="font-size: 1.0rem;"><img class="img-text" src="images/label-note.png" alt="特殊需求 (選填)" style="height: 1.0rem; width: auto; display: inline-block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span class="img-fallback" style="color: #353569;">特殊需求 (選填)</span></label>
+                        <textarea id="special-note" rows="2" placeholder="請輸入您的需求，&#10;並私訊我們的 IG ！"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-footer">
+                <!-- submit-btn text is changed by JS during submission ("訂單傳送中..."), kept as text so that still works -->
+                <button class="nav-btn img-btn" id="submit-btn" onclick="submitOrder()">
+                    <img class="img-text" id="submit-btn-img" src="提交訂單.png" alt="確認並提交訂單" style="height: 2.4rem; width: auto;" onerror="this.style.display='none'; document.getElementById('submit-btn-fallback').style.display='inline';">
+                    <span class="img-fallback" id="submit-btn-fallback" style="color: white; font-size: 1.5rem; text-decoration: underline;">確認並提交訂單</span>
+                    <span class="img-fallback" id="submit-btn-sending" style="color: white; font-size: 1.2rem;">訂單傳送中...</span>
+                </button>
+                <span class="prev-link img-btn" style="font-size: 1rem; margin-top: 10px; display: inline-block;" onclick="prevPage()">
+                    <img class="img-text" src="上一頁修改.png" alt="回上一頁修改" style="height: 1.8rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="img-fallback" style="color: #353569; text-decoration: underline;">回上一頁修改</span>
+                </span>
+            </div>
+        </div>
+    </section>
+    <section class="page page-success">
+        <div class="content-card desktop-only-content">
+            <h3 style="margin-bottom: 10px;">
+                <img class="img-text" src="images/success-title.png" alt="訂單已成立" style="height: 2.2rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="img-fallback" style="color: #353569; font-size: 2.2rem;">訂單已成立</span>
+            </h3>
+            <!-- success message contains a dynamic date/time inserted by JS, kept as text -->
+            <p id="success-msg-desktop" class="chinese-handwriting" style="font-size: 1.4rem; margin-bottom: 20px;">感謝您的訂購，請等候通知。</p>
+            <div class="success-footer-links">
+                <img class="img-text" src="images/success-note.png" alt="除了甜點、咖啡之外，下面還有我們的bnb住宿以及選物空間，有機會歡迎來台東找我們玩喔！" style="max-width: 800px; margin-bottom: 15px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <p class="img-fallback" style="font-size: 1.4rem; color: #353569; max-width: 800px !important; margin-bottom: 15px;">除了甜點、咖啡之外，下面還有我們的bnb住宿以及選物空間，<br>有機會歡迎來台東找我們玩喔！</p>
+                <div class="social-grid">
+                    <a href="https://www.instagram.com/deepcoffee241?igsh=NGE2MzZvcTIzNHM5" target="_blank" class="social-link">
+                        <img class="img-text" src="images/social-deepcoffee.png" alt="Deep Coffee IG" style="height: 1.4rem; width: auto; display: inline-block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                        <span class="img-fallback" style="font-weight: bold;">Deep Coffee IG</span>
+                    </a>
+                    <a href="https://www.instagram.com/deepairbnb?igsh=MXVmYzFsdWNsd3J6" target="_blank" class="social-link">
+                        <img class="img-text" src="images/social-airbnb.png" alt="Deep Airbnb IG" style="height: 1.4rem; width: auto; display: inline-block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                        <span class="img-fallback" style="font-weight: bold;">Deep Airbnb IG</span>
+                    </a>
+                </div>
+                <button class="nav-btn img-btn" onclick="location.reload()" style="margin-bottom: 40px;">
+                    <img class="img-text" src="images/cta-restart.png" alt="回首頁再次點餐" style="height: 1.2rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="img-fallback" style="color: var(--accent); font-size: 1.2rem;">回首頁再次點餐</span>
+                </button>
+            </div>
+        </div>
+        <div class="content-card mobile-only-content">
+            <h3 style="margin-bottom: 10px;">
+                <img class="img-text" src="images/success-title.png" alt="訂單已成立" style="height: 1.8rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span class="img-fallback" style="color: #353569;">訂單已成立</span>
+            </h3>
+            <p id="success-msg-mobile" style="font-family: 'LXGW WenKai TC', sans-serif !important; font-size: 0.95rem; margin-bottom: 20px; max-width: 95%; line-height: 1.6;">感謝您的訂購，請等候通知。</p>
+            <div class="success-footer-links" style="width: 100%;">
+                <img class="img-text" src="images/success-note.png" alt="除了甜點、咖啡之外，下面還有我們的bnb住宿以及選物空間，有機會歡迎來台東找我們玩喔！" style="max-width: 95%; margin-bottom: 20px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <p class="img-fallback" style="font-family: 'LXGW WenKai TC', sans-serif !important; font-size: 0.95rem; color: #353569; margin-bottom: 20px; max-width: 95%; line-height: 1.6;">除了甜點、咖啡之外，<br>下面還有我們的bnb住宿以及選物空間，<br>有機會歡迎來台東找我們玩喔！</p>
+                <div class="social-grid">
+                    <a href="https://www.instagram.com/deepcoffee241?igsh=NGE2MzZvcTIzNHM5" target="_blank" class="social-link">
+                        <img class="img-text" src="images/social-deepcoffee.png" alt="Deep Coffee IG" style="height: 1.3rem; width: auto; display: inline-block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                        <span class="img-fallback">Deep Coffee IG</span>
+                    </a>
+                    <a href="https://www.instagram.com/sunyun686?igsh=MTYzdTl4M2Fxa2Jvbg==" target="_blank" class="social-link">
+                        <img class="img-text" src="images/social-sanyun.png" alt="三蘊 IG" style="height: 1.3rem; width: auto; display: inline-block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                        <span class="img-fallback"><span class="brand-font">三&nbsp;藴</span> IG</span>
+                    </a>
+                </div>
+                <button class="nav-btn img-btn" onclick="location.reload()" style="margin-top: 30px; margin-bottom: 40px;">
+                    <img class="img-text" src="回首頁點餐.png" alt="回首頁再次點餐" style="height: 1.8rem; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span class="img-fallback" style="color: var(--accent);">回首頁再次點餐</span>
+                </button>
+            </div>
+        </div>
+    </section>
+</div>
+<script>
+let startX = 0;
+let currentPage = 0;
+let cart = [];
+let products = [];
+let productSelections = {};
+const slider = document.getElementById('slider');
+const GAS_API = 'https://script.google.com/macros/s/AKfycbxAuM_YOnaQLaDzCfIXmsucHLfQqEzC8qfvMdlfIC9_m2yclWLIcXuaiZcihe2ZyzVg/exec';
+document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+document.addEventListener('gestureend', (e) => e.preventDefault(), { passive: false });
+let lastTouchEnd = 0;
+document.addEventListener('touchend', (e) => {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) e.preventDefault();
+    lastTouchEnd = now;
+}, { passive: false });
+let isGestureLocked = false;
+window.addEventListener('touchstart', e => {
+    const scale = (window.visualViewport) ? window.visualViewport.scale : 1;
+    if (e.touches.length > 1 || scale > 1.02) { isGestureLocked = true; return; }
+    isGestureLocked = false;
+    startX = e.touches[0].clientX;
+}, {passive: true});
+window.addEventListener('touchmove', e => { if (e.touches.length > 1) isGestureLocked = true; }, {passive: true});
+window.addEventListener('touchend', e => {
+    const currentScale = (window.visualViewport) ? window.visualViewport.scale : 1;
+    if (isGestureLocked || currentScale > 1.02) return;
+    if (window.getSelection().toString().length > 0) return;
+    let diff = startX - e.changedTouches[0].clientX;
+    const threshold = 100;
+    if (diff > threshold) { if (currentPage < 1) nextPage(); }
+    else if (diff < -threshold) { if (currentPage > 0 && currentPage <= 2) prevPage(); }
+}, {passive: true});
+window.addEventListener('mousedown', e => {
+    if (currentPage > 2) return;
+    const startScale = (window.visualViewport) ? window.visualViewport.scale : 1;
+    startX = e.clientX;
+    const handleMouseUp = (me) => {
+        const currentScale = (window.visualViewport) ? window.visualViewport.scale : 1;
+        if (startScale > 1.05 || currentScale > 1.05) { window.removeEventListener('mouseup', handleMouseUp); return; }
+        let diff = startX - me.clientX;
+        const threshold = 100;
+        if (diff > threshold) { if (currentPage < 1) nextPage(); }
+        else if (diff < -threshold) { if (currentPage > 0 && currentPage <= 2) prevPage(); }
+        window.removeEventListener('mouseup', handleMouseUp);
+    };
+    window.addEventListener('mouseup', handleMouseUp);
+});
+function nextPage() {
+    if (currentPage === 2) {
+        if (cart.length === 0) { alert('您的購物車還是空的，請先挑選商品！'); return; }
+        updateCheckoutSummary();
+    }
+    if (currentPage === 4) {
+        const phone = document.getElementById('user-phone').value;
+        const tail = document.getElementById('account-tail').value;
+        if (!phone || phone.length < 9) { alert('請輸入正確的手機號碼！'); return; }
+        if (!tail || tail.length !== 5) { alert('請輸入正確的帳號後五碼！'); return; }
+    }
+    if (currentPage < 5) { currentPage++; updateSlider(); }
+}
+function prevPage() { if (currentPage > 0) { currentPage--; updateSlider(); } }
+function updateSlider() {
+    const slider = document.getElementById('slider');
+    slider.style.transform = `translateX(-${currentPage * (100 / 6)}%)`;
+    document.getElementById('progress').style.width = `${((currentPage + 1) / 6) * 100}%`;
+    if (currentPage === 1) showGuide('daily');
+}
+function fixAfterResize(){ updateSlider(); slider.scrollLeft = 0; }
+window.addEventListener('resize', fixAfterResize);
+if (window.visualViewport) window.visualViewport.addEventListener('resize', fixAfterResize);
+function showGuide(type) {
+  const contentDesktop = document.getElementById('guide-content-desktop');
+  const contentMobile  = document.getElementById('guide-content-mobile');
+  const btnsDesktop = document.querySelectorAll('.guide-btn-desktop');
+  const btnsMobile  = document.querySelectorAll('.guide-btn-mobile');
+  function setActive(btns) { btns.forEach(btn => { btn.classList.toggle('active', btn.dataset.guide === type); }); }
+  setActive(btnsDesktop);
+  setActive(btnsMobile);
+  const dailyHtmlDesktop = `
+    1. 我們僅接受轉帳方式付款，<strong>請於訂購時完成轉帳</strong>。<br>
+    2. 當日商品請於選定時段內至特定地點取貨。<br>
+    &emsp; 取貨地址：<strong>台東縣台東市中正路6號</strong><br>
+    &emsp; 時段有以下選擇：<strong>13:00 - 14:00 / 14:00 - 15:00</strong><br>
+    3. 訂單成立付款後，僅能更換等值商品，無法退款。
+  `;
+  const preorderHtmlDesktop = `
+    1. 送出訂單後，<strong>請務必立即主動私訊我們的 IG</strong>。<br>
+    2. 製作商品約需 3-5 個工作天，請告知預計取貨時間，我們確認是否能開單。<br>
+    3. 響應環保愛地球，將不提供一次性餐具。<br>
+    4. 可選擇<strong>面交自取</strong>或<strong>宅配寄送</strong>。<br>
+    &emsp;&emsp;• 若選擇<strong>面交取貨</strong>：<strong>台東縣台東市中正路6號</strong><br>
+    &emsp;&emsp;確認取貨時間後，如需更改時間請務必事先電話告知。<br>
+    &emsp;&emsp;• 若選擇<strong>宅配</strong>：<br>
+    &emsp;&emsp;黑貓低溫宅配 $180~250 以件數尺寸計費，出貨日隔日送達 (離島另計)。<br>
+    5. 若需客製或急單，需加收$200~$500不等費用（依製作時間），<br>
+    &emsp; 內容請私訊討論。<br>
+    6. 宅配蛋糕出貨前盡可能包裝完善，但仍有損壞風險，<br>
+    &emsp; 若運送中變形恕不賠償，請自行評估後下單。<br>
+    7. 食品不適用七天猶豫期，恕不退換貨。<br>
+    &emsp; 如下單付款後，僅能換等值商品，無法退款。<br>
+    8. <strong>待確認訂單細節後再進行付款</strong>，謝謝您！<br><br>
+    ❗下單後一定要私訊Instagram才算完成訂單❗
+  `;
+  const dailyHtmlMobile = `
+    1. 我們僅接受轉帳方式付款，<strong>請於訂購時完成轉帳</strong>。<br>
+    2. 當日商品請於選定時段內至特定地點取貨。<br>
+    • 取貨地址：<strong>台東縣台東市中正路6號</strong><br>
+    • 時段有以下選擇：<strong>13:00 - 14:00 / 14:00 - 15:00</strong><br>
+    3. 訂單成立付款後，僅能更換等值商品，無法退款。`;
+  const preorderHtmlMobile = `
+    1. 送出訂單後，<strong>請務必立即主動私訊我們的 IG</strong>。<br>
+    2. 製作商品約需 3-5 個工作天，請告知預計取貨時間，我們確認是否能開單。<br>
+    3. 響應環保愛地球，將不提供一次性餐具。<br>
+    4. 可選擇<strong>面交自取</strong>或<strong>宅配寄送</strong>。<br>
+    • 若選擇<strong>面交取貨</strong>：<strong>台東縣台東市中正路6號</strong><br>
+    確認取貨時間後，如需更改時間請務必事先電話告知。<br>
+    • 若選擇<strong>宅配</strong>：<br>
+    黑貓低溫宅配 $180~250 以件數尺寸計費，<br>
+    出貨日隔日送達 (離島另計)。<br>
+    5. 若需客製或急單，需加收$200~$500不等費用（依製作時間），內容請私訊討論。<br>
+    6. 宅配蛋糕出貨前盡可能包裝完善，但仍有損壞風險，若運送中變形恕不賠償，請自行評估後下單。<br>
+    7. 食品不適用七天猶豫期，恕不退換貨。<br>
+    如下單付款後，僅能換等值商品，無法退款。<br>
+    8. <strong>待確認訂單細節後再進行付款</strong>，謝謝您！<br><br>
+    ❗<strong>下單後一定要私訊Instagram才算完成訂單</strong>❗`;
+  if (contentDesktop) { contentDesktop.innerHTML = (type === 'daily') ? dailyHtmlDesktop : preorderHtmlDesktop; contentDesktop.scrollTop = 0; }
+  if (contentMobile) { contentMobile.innerHTML = (type === 'daily') ? dailyHtmlMobile : preorderHtmlMobile; contentMobile.scrollTop = 0; }
+}
+async function init() {
+    try {
+        const resp = await fetch(GAS_API);
+        products = await resp.json();
+        renderProductsByCat('當日義式');
+    } catch (err) {
+        document.getElementById('product-list').innerHTML = "目前無法連線至資料庫";
+    }
+}
+let currentCategory = '當日義式';
+function renderProductsByCat(cat) {
+    currentCategory = cat;
+    const descDiv = document.getElementById('category-desc');
+    if (cat === '預約甜點') descDiv.innerText = '宅配／面交取貨';
+    else descDiv.innerText = '在特定時段來店取貨';
+    const buttons = document.querySelectorAll('.page-menu .cat-btn');
+    buttons.forEach(btn => {
+        if (btn.dataset.cat === cat) btn.classList.add('active');
+        else btn.classList.remove('active');
+    });
+    renderProducts(products);
+    const listDiv = document.getElementById('product-list');
+    if (listDiv) listDiv.scrollTop = 0;
+}
+function renderProducts(data) {
+    const listDiv = document.getElementById('product-list');
+    const filteredData = data.filter(p => p.category && p.category.trim() === currentCategory);
+    if (filteredData.length === 0) {
+        listDiv.innerHTML = `<div style="padding:20px; color:#353569;">【${currentCategory}】目前無商品</div>`;
+        return;
+    }
+    listDiv.innerHTML = filteredData.map((p) => {
+        const realIndex = products.findIndex(item => item.name === p.name);
+        if (p.temp_option === 'Y' && !productSelections[p.name]) productSelections[p.name] = 'Hot';
+        const currentTemp = productSelections[p.name] || '';
+        const basePrice = parseInt(p.price);
+        const coldExtra = (currentTemp === 'Cold' && p.temp_option === 'Y') ? parseInt(p.cold_extra || 0) : 0;
+        const displayPrice = basePrice + coldExtra;
+        const cartItem = cart.find(item => item.name === p.name && item.temp === currentTemp);
+        const count = cartItem ? cartItem.qty : 0;
+        const out = (p.stock - count) <= 0;
+        const imgHtml = (p.img && p.img.trim() !== "") ? `<img src="${p.img}" class="product-img" onerror="this.style.display='none'" alt="${p.name}">` : "";
+        const tempSelectorHtml = (p.temp_option === 'Y') ? `
+            <div class="temp-selector">
+                <button class="temp-btn ${currentTemp === 'Hot' ? 'active' : ''}" onclick="changeTemp('${p.name}', 'Hot')">熱</button>
+                <button class="temp-btn ${currentTemp === 'Cold' ? 'active' : ''}" onclick="changeTemp('${p.name}', 'Cold')">冰</button>
+            </div>` : "";
+        return `
+            <div class="product">
+                ${imgHtml}
+                <div class="product-info">
+                    <h4 style="margin:0; font-size:1.5rem;">${p.name}</h4>
+                    ${tempSelectorHtml}
+                </div>
+                <div class="product-price-section">
+                    <span class="stock-text" style="color:${out ? '#ff4d4d' : '#353569'};">${out ? '已售完' : '剩餘 ' + (p.stock - count)}</span>
+                    <div class="price-text">$${displayPrice}</div>
+                    <div class="qty-controls">
+                        ${count > 0 ? `
+                            <button class="qty-btn" onclick="updateCartQty('${p.name}', '${currentTemp}', -1, '${p.category}')">−</button>
+                            <span style="font-weight:bold;">${count}</span>` : ''}
+                        <button class="qty-btn" onclick="updateCartQty('${p.name}', '${currentTemp}', 1, '${p.category}')" ${out?'disabled':''}>+</button>
+                    </div>
+                </div>
+            </div>`;
+    }).join('');
+}
+function changeTemp(name, temp) { productSelections[name] = temp; renderProducts(products); }
+function updateCartQty(name, temp, delta, cat) {
+    const p = products.find(prod => prod.name === name && prod.category === cat);
+    if (!p) return;
+    const coldExtra = (temp === 'Cold' && p.temp_option === 'Y') ? parseInt(p.cold_extra || 0) : 0;
+    const finalPrice = parseInt(p.price) + coldExtra;
+    const item = cart.find(c => c.name === name && c.temp === temp && c.category === cat);
+    if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) cart.splice(cart.indexOf(item), 1);
+    } else if (delta > 0) {
+        cart.push({ name: name, price: finalPrice, qty: 1, temp: temp, category: cat.trim() });
+    }
+    renderProducts(products);
+    updateUI();
+}
+function updateUI() {
+    document.getElementById('count').innerText = cart.reduce((a, b) => a + b.qty, 0);
+    document.getElementById('total').innerText = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+}
+function showCheckout() {
+    const categoriesInCart = cart.map(item => {
+        const cleanName = item.name.replace(/\(冰\)|\(熱\)/g, "").trim();
+        const p = products.find(prod => prod.name.trim() === cleanName);
+        return p ? p.category.trim() : "";
+    });
+    const hasDaily = cart.some(item => item.category && item.category.startsWith('當日'));
+    const hasPreorder = cart.some(item => item.category && (item.category.includes('預約') || item.category.includes('預訂')));
+    if (hasDaily && hasPreorder) { alert("溫馨提示：當日商品與預約商品需分開下單，請調整購物車內容，謝謝您！"); return; }
+    const bankSection = document.getElementById('bank-info-section');
+    if (bankSection) bankSection.style.display = (hasDaily || hasPreorder) ? 'block' : 'none';
+    document.getElementById('account-tail-section').style.display = hasDaily ? 'block' : 'none';
+    document.getElementById('pickup-slot-section').style.display = hasDaily ? 'block' : 'none';
+    document.getElementById('preorder-method-section').style.display = hasPreorder ? 'block' : 'none';
+    document.getElementById('delivery-info-section').style.display = hasPreorder ? 'block' : 'none';
+    if (hasPreorder) {
+        document.getElementById('preorder-type').value = "宅配";
+        togglePreorderFields();
+        const today = new Date();
+        today.setDate(today.getDate() + 3);
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const minDate = `${yyyy}-${mm}-${dd}`;
+        const dateInput = document.getElementById('delivery-date');
+        dateInput.min = minDate;
+        dateInput.value = minDate;
+    }
+    document.getElementById('special-note-container').style.display = 'block';
+    const noteInput = document.getElementById('special-note');
+    if (hasDaily) noteInput.placeholder = "如果取貨時間需要協調，\n請填寫想取貨時間並私訊我們的 IG ～";
+    else noteInput.placeholder = "請輸入您的需求，\n並私訊我們的 IG ！";
+    let methodValue = "";
+    if (hasDaily) methodValue = "自取";
+    else if (hasPreorder) methodValue = document.getElementById('preorder-type').value;
+    document.getElementById('pickup-method').value = methodValue;
+    updateCheckoutSummary();
+    nextPage();
+}
+function updateCheckoutSummary() {
+    let total = document.getElementById('total').innerText;
+    let summary = cart.map(i => {
+        const tempLabel = i.temp === 'Hot' ? '(熱)' : (i.temp === 'Cold' ? '(冰)' : '');
+        return `${i.name}${tempLabel} x ${i.qty}`;
+    }).join("<br>");
+    document.getElementById('cart-summary').innerHTML = summary + "<hr>總計: $" + total;
+}
+function togglePreorderFields() {
+    const type = document.getElementById('preorder-type').value;
+    const addrInput = document.getElementById('delivery-address');
+    const dateLabel = document.getElementById('date-label');
+    if (type === '面交') { addrInput.style.display = 'none'; addrInput.value = ""; dateLabel.innerText = "取貨日期"; }
+    else { addrInput.style.display = 'block'; dateLabel.innerText = "預計到貨日期"; }
+}
+async function submitOrder() {
+    const name = document.getElementById('user-name').value;
+    const phone = document.getElementById('user-phone').value;
+    const tail = document.getElementById('account-tail').value;
+    const note = document.getElementById('special-note').value.trim();
+    const isDailyOrder = document.getElementById('account-tail-section').style.display === 'block';
+    if (!name || !phone) return alert('請填寫姓名與手機號碼！');
+    if (isDailyOrder && tail.length !== 5) return alert('請輸入帳號後五碼！');
+    let details = [];
+    let methodValue = "";
+    if (isDailyOrder) {
+        methodValue = "自取";
+        details.push(`自取時段: ${document.getElementById('pickup-time').value}`);
+    } else {
+        const preType = document.getElementById('preorder-type').value;
+        const date = document.getElementById('delivery-date').value;
+        const addr = document.getElementById('delivery-address').value;
+        if (preType === '宅配') {
+            if (!date || !addr) return alert('請完整填寫預計到貨日期與地址！');
+            details.push(`宅配日期: ${date}\n地址: ${addr}`);
+        } else {
+            if (!date) return alert('請選擇取貨日期！');
+            details.push(`面交日期: ${date}`);
+        }
+        methodValue = preType;
+    }
+    if (note !== "") { methodValue = "★" + methodValue; details.push(`★ 特殊需求: ${note}`); }
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    setSubmitSending(true);
+    const hasDaily = cart.some(item => ['當日義式', '當日茶飲', '當日甜點'].includes(item.category));
+    const hasPreorder = cart.some(item => item.category === '預約甜點');
+    const time = document.getElementById('pickup-time').value;
+    const date = document.getElementById('delivery-date').value;
+    const address = "台東縣台東市中正路6號";
+    let msgDesktop = "感謝您的訂購，請等候通知。";
+    let msgMobile = "感謝您的訂購，請等候通知。";
+    if (isDailyOrder) {
+        msgDesktop = `感謝您的訂購！<br>請記得於 ${time} 至<strong>${address}</strong>取貨！`;
+        msgMobile  = `感謝您的訂購！<br>請記得於 ${time}<br>至<strong style="color: #30305f;">${address}</strong>取貨！`;
+    } else if (hasPreorder) {
+        msgDesktop = `感謝您的訂購！<strong>請務必主動私訊我們的 IG</strong> ～<br>待確認訂單後，將安排於${date}前完成出貨，謝謝您！`;
+        msgMobile  = `感謝您的訂購！<br><strong style="color: #30305f;">請務必主動私訊我們的 IG</strong> ～<br>待確認訂單後，將於 ${date} 前完成出貨，<br>謝謝您！`;
+    }
+    const orderData = {
+        name: name, phone: phone, accountTail: tail, pickupMethod: methodValue,
+        pickupDetail: details.join("\n\n"), cart: cart, totalAmount: document.getElementById('total').innerText
+    };
+    try {
+        const resp = await fetch(GAS_API, { method: 'POST', body: JSON.stringify(orderData) });
+        const result = await resp.json();
+        if (result.status === "Success") {
+            const elDesktop = document.getElementById('success-msg-desktop');
+            const elMobile = document.getElementById('success-msg-mobile');
+            if (elDesktop) elDesktop.innerHTML = msgDesktop;
+            if (elMobile) elMobile.innerHTML = msgMobile;
+            currentPage = 5;
+            updateSlider();
+        } else {
+            alert('系統錯誤: ' + result.message);
+            btn.disabled = false;
+            setSubmitSending(false);;
+        }
+    } catch (err) {
+        alert('提交失敗，請檢查網路連線');
+        btn.disabled = false;
+        btn.innerText = "確認並提交訂單";
+    }
+}
+function setSubmitSending(isSending) {
+    const img = document.getElementById('submit-btn-img');
+    const fallback = document.getElementById('submit-btn-fallback');
+    const sending = document.getElementById('submit-btn-sending');
+    if (isSending) {
+        img.style.display = 'none';
+        fallback.style.display = 'none';
+        sending.style.display = 'inline';
+    } else {
+        sending.style.display = 'none';
+        if (img.complete && img.naturalWidth === 0) { fallback.style.display = 'inline'; }
+        else { img.style.display = ''; }
+    }
+}
+init();
+updateSlider();
+document.addEventListener('DOMContentLoaded', () => { showGuide('daily'); });
+</script>
+</body>
+</html>
